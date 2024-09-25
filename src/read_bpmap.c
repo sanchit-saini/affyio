@@ -186,7 +186,7 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
 
   for (i=0; i < nseq; i++){
     fread_be_uint32(&seq_name_length,1,infile);
-    seq_name = (char *)Calloc(seq_name_length+1,char);
+    seq_name = (char *)R_Calloc(seq_name_length+1,char);
     fread_be_char(seq_name,seq_name_length,infile);
     
  
@@ -229,7 +229,7 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
     SET_STRING_ELT(tmpSXP,0,mkChar(seq_name));
     SET_VECTOR_ELT(CurSequenceDescription,0,tmpSXP);
     UNPROTECT(1);
-    Free(seq_name);
+    R_Free(seq_name);
 
     
     if (version == 1.0){
@@ -249,25 +249,25 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
       
 
       fread_be_uint32(&group_name_length,1,infile);
-      group_name = (char *)Calloc(group_name_length+1,char);
+      group_name = (char *)R_Calloc(group_name_length+1,char);
       fread_be_char(group_name,group_name_length,infile);
       
       PROTECT(tmpSXP=allocVector(STRSXP,1));
       SET_STRING_ELT(tmpSXP,0,mkChar(group_name));
       SET_VECTOR_ELT(CurSequenceDescription,2,tmpSXP);
       UNPROTECT(1);
-      Free(group_name);
+      R_Free(group_name);
       
 
       fread_be_uint32(&version_number_length,1,infile);
-      version_number = (char *)Calloc(version_number_length+1,char);
+      version_number = (char *)R_Calloc(version_number_length+1,char);
       fread_be_char(version_number,version_number_length,infile);
       
       PROTECT(tmpSXP=allocVector(STRSXP,1));
       SET_STRING_ELT(tmpSXP,0,mkChar(version_number));
       SET_VECTOR_ELT(CurSequenceDescription,3,tmpSXP);
       UNPROTECT(1);
-      Free(version_number);
+      R_Free(version_number);
 
 
       fread_be_uint32(&number_parameters,1,infile);
@@ -282,15 +282,15 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
       for (j=0; j < number_parameters; j++){
 	PROTECT(tmpSXP2 = allocVector(STRSXP,2));
 	fread_be_uint32(&param_length,1,infile);
-	param_name = (char *)Calloc(param_length+1,char);
+	param_name = (char *)R_Calloc(param_length+1,char);
 	fread_be_char(param_name,param_length,infile);
 	SET_STRING_ELT(tmpSXP2,0,mkChar(param_name));
-	Free(param_name);
+	R_Free(param_name);
 	fread_be_uint32(&param_length,1,infile);
-	param_name = (char *)Calloc(param_length+1,char);
+	param_name = (char *)R_Calloc(param_length+1,char);
 	fread_be_char(param_name,param_length,infile);
 	SET_STRING_ELT(tmpSXP2,1,mkChar(param_name));
-	Free(param_name);
+	R_Free(param_name);
 		
 	SET_VECTOR_ELT(tmpSXP,j,tmpSXP2);
 	UNPROTECT(1);
@@ -320,24 +320,24 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
       UNPROTECT(1);
 
       fread_be_uint32(&group_name_length,1,infile);
-      group_name = (char *)Calloc(group_name_length+1,char);
+      group_name = (char *)R_Calloc(group_name_length+1,char);
       fread_be_char(group_name,group_name_length,infile);
       
       PROTECT(tmpSXP=allocVector(STRSXP,1));
       SET_STRING_ELT(tmpSXP,0,mkChar(group_name));
       SET_VECTOR_ELT(CurSequenceDescription,4,tmpSXP);
       UNPROTECT(1);
-      Free(group_name);
+      R_Free(group_name);
       
       fread_be_uint32(&version_number_length,1,infile);
-      version_number = (char *)Calloc(version_number_length+1,char);
+      version_number = (char *)R_Calloc(version_number_length+1,char);
       fread_be_char(version_number,version_number_length,infile);
       
       PROTECT(tmpSXP=allocVector(STRSXP,1));
       SET_STRING_ELT(tmpSXP,0,mkChar(version_number));
       SET_VECTOR_ELT(CurSequenceDescription,5,tmpSXP);
       UNPROTECT(1);
-      Free(version_number);
+      R_Free(version_number);
 
       fread_be_uint32(&number_parameters,1,infile);
       PROTECT(tmpSXP=allocVector(INTSXP,1));
@@ -353,15 +353,15 @@ static SEXP ReadBPMAPSeqDescription(FILE *infile, float version, int nseq){
       for (j=0; j < number_parameters; j++){
 	PROTECT(tmpSXP2 = allocVector(STRSXP,2));
 	fread_be_uint32(&param_length,1,infile);
-	param_name = (char *)Calloc(param_length+1,char);
+	param_name = (char *)R_Calloc(param_length+1,char);
 	fread_be_char(param_name,param_length,infile);
 	SET_STRING_ELT(tmpSXP2,0,mkChar(param_name));
-	Free(param_name);
+	R_Free(param_name);
 	fread_be_uint32(&param_length,1,infile);
-	param_name = (char *)Calloc(param_length+1,char);
+	param_name = (char *)R_Calloc(param_length+1,char);
 	fread_be_char(param_name,param_length,infile);
 	SET_STRING_ELT(tmpSXP2,1,mkChar(param_name));
-	Free(param_name);
+	R_Free(param_name);
 		
 	SET_VECTOR_ELT(tmpSXP,j,tmpSXP2);
 	UNPROTECT(1);
@@ -751,11 +751,11 @@ static SEXP readBPMAPSeqIdPositionInfo(FILE *infile, float version, int nseq, SE
 
 
 
-      dest = (char *)Calloc(25+1,char);
+      dest = (char *)R_Calloc(25+1,char);
       packedSeqTobaseStr(probeseq,dest);
 
       SET_STRING_ELT(probeSeqString,j,mkChar(dest));
-      Free(dest);
+      R_Free(dest);
 
 
 

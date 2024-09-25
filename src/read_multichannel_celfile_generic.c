@@ -89,12 +89,12 @@ static int compare_AWSTRING_Intensity(AWSTRING string){
 
   int rv = 0;
   if (string.len > 0){
-    char *temp = Calloc(string.len+1,char);
+    char *temp = R_Calloc(string.len+1,char);
     wcstombs(temp, string.value, string.len);
     
     rv = strcmp(temp,"Intensity");
     
-    Free(temp);
+    R_Free(temp);
   }
   return rv;
 }
@@ -187,7 +187,7 @@ char *multichannel_determine_channel_name(const char *filename, int channelindex
   }
   read_generic_data_group(&my_data_group,infile);
   if (my_data_group.data_group_name.len > 0){
-    returnvalue = Calloc(my_data_group.data_group_name.len+1,char);
+    returnvalue = R_Calloc(my_data_group.data_group_name.len+1,char);
     wcstombs(returnvalue, my_data_group.data_group_name.value, my_data_group.data_group_name.len);
   } 
   Free_generic_data_group(&my_data_group);
@@ -450,8 +450,8 @@ void generic_get_masks_outliers_multichannel(const char *filename, int *nmasks, 
   
   *noutliers = my_data_set.nrows;
 
-  *outliers_x = Calloc(my_data_set.nrows,short); 
-  *outliers_y = Calloc(my_data_set.nrows,short);
+  *outliers_x = R_Calloc(my_data_set.nrows,short); 
+  *outliers_y = R_Calloc(my_data_set.nrows,short);
   
   read_generic_data_set_rows(&my_data_set,infile); 
   
@@ -468,8 +468,8 @@ void generic_get_masks_outliers_multichannel(const char *filename, int *nmasks, 
    
   *nmasks = my_data_set.nrows;
 
-  *masks_x = Calloc(my_data_set.nrows,short); 
-  *masks_y = Calloc(my_data_set.nrows,short);
+  *masks_x = R_Calloc(my_data_set.nrows,short); 
+  *masks_y = R_Calloc(my_data_set.nrows,short);
   
   
   read_generic_data_set_rows(&my_data_set,infile); 
@@ -716,7 +716,7 @@ char *gzmultichannel_determine_channel_name(const char *filename, int channelind
   }
   gzread_generic_data_group(&my_data_group,infile);
   if (my_data_group.data_group_name.len > 0){
-    returnvalue = Calloc(my_data_group.data_group_name.len+1,char);
+    returnvalue = R_Calloc(my_data_group.data_group_name.len+1,char);
     wcstombs(returnvalue, my_data_group.data_group_name.value, my_data_group.data_group_name.len);
   } 
   Free_generic_data_group(&my_data_group);
@@ -963,8 +963,8 @@ void gzgeneric_get_masks_outliers_multichannel(const char *filename, int *nmasks
   
   *noutliers = my_data_set.nrows;
 
-  *outliers_x = Calloc(my_data_set.nrows,short); 
-  *outliers_y = Calloc(my_data_set.nrows,short);
+  *outliers_x = R_Calloc(my_data_set.nrows,short); 
+  *outliers_y = R_Calloc(my_data_set.nrows,short);
   
   gzread_generic_data_set_rows(&my_data_set,infile); 
   
@@ -981,8 +981,8 @@ void gzgeneric_get_masks_outliers_multichannel(const char *filename, int *nmasks
    
   *nmasks = my_data_set.nrows;
 
-  *masks_x = Calloc(my_data_set.nrows,short); 
-  *masks_y = Calloc(my_data_set.nrows,short);
+  *masks_x = R_Calloc(my_data_set.nrows,short); 
+  *masks_y = R_Calloc(my_data_set.nrows,short);
   
   
   gzread_generic_data_set_rows(&my_data_set,infile); 

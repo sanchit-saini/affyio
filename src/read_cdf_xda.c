@@ -242,7 +242,7 @@ int read_cdf_qcunit(cdf_qc_unit *my_unit,int filelocation,FILE *instream){
   fread_uint32(&(my_unit->n_probes),1,instream);
 
 
-  my_unit->qc_probes = Calloc(my_unit->n_probes,cdf_qc_probe);
+  my_unit->qc_probes = R_Calloc(my_unit->n_probes,cdf_qc_probe);
 
   for (i=0; i < my_unit->n_probes; i++){
     fread_uint16(&(my_unit->qc_probes[i].x),1,instream);
@@ -286,7 +286,7 @@ int read_cdf_unit(cdf_unit *my_unit,int filelocation,FILE *instream){
   fread_int32(&(my_unit->unitnumber),1,instream);
   fread_uchar(&(my_unit->ncellperatom),1,instream);
 
-  my_unit->unit_block = Calloc(my_unit->nblocks,cdf_unit_block);
+  my_unit->unit_block = R_Calloc(my_unit->nblocks,cdf_unit_block);
 
   for (i=0; i < my_unit->nblocks; i++){
     fread_int32(&(my_unit->unit_block[i].natoms),1,instream);
@@ -297,7 +297,7 @@ int read_cdf_unit(cdf_unit *my_unit,int filelocation,FILE *instream){
     fread_int32(&(my_unit->unit_block[i].unused),1,instream);
     fread_char(my_unit->unit_block[i].blockname,64,instream); 
 
-    my_unit->unit_block[i].unit_cells = Calloc(my_unit->unit_block[i].ncells,cdf_unit_cell);
+    my_unit->unit_block[i].unit_cells = R_Calloc(my_unit->unit_block[i].ncells,cdf_unit_cell);
 
     for (j=0; j < my_unit->unit_block[i].ncells; j++){
       fread_int32(&(my_unit->unit_block[i].unit_cells[j].atomnumber),1,instream);
@@ -329,25 +329,25 @@ static void dealloc_cdf_xda(cdf_xda *my_cdf){
   int i;
 
   for (i=0; i < my_cdf->header.n_units; i++){
-    Free(my_cdf->probesetnames[i]);
+    R_Free(my_cdf->probesetnames[i]);
   }              
-  Free(my_cdf->probesetnames);
+  R_Free(my_cdf->probesetnames);
 
-  Free(my_cdf->qc_start);
-  Free(my_cdf->units_start);
+  R_Free(my_cdf->qc_start);
+  R_Free(my_cdf->units_start);
 
   for (i=0; i < my_cdf->header.n_qc_units; i++){
-    Free(my_cdf->qc_units[i].qc_probes);
+    R_Free(my_cdf->qc_units[i].qc_probes);
   }
 
-  Free(my_cdf->qc_units);
+  R_Free(my_cdf->qc_units);
 
 
   for (i=0; i < my_cdf->header.n_units; i++){
-    Free(my_cdf->units[i].unit_block);
+    R_Free(my_cdf->units[i].unit_block);
   }
-  Free(my_cdf->units);
-  Free(my_cdf->header.ref_seq);
+  R_Free(my_cdf->units);
+  R_Free(my_cdf->header.ref_seq);
 
 } 
 
@@ -417,14 +417,14 @@ static int read_cdf_xda(const char *filename,cdf_xda *my_cdf){
     return 0;
   }
   
-  my_cdf->header.ref_seq = Calloc(my_cdf->header.len_ref_seq,char);
+  my_cdf->header.ref_seq = R_Calloc(my_cdf->header.len_ref_seq,char);
 
   fread_char(my_cdf->header.ref_seq, my_cdf->header.len_ref_seq, infile);
-  my_cdf->probesetnames = Calloc(my_cdf->header.n_units,char *);
+  my_cdf->probesetnames = R_Calloc(my_cdf->header.n_units,char *);
 
 
   for (i =0; i < my_cdf->header.n_units;i++){
-    my_cdf->probesetnames[i] = Calloc(64,char);
+    my_cdf->probesetnames[i] = R_Calloc(64,char);
     if (!fread_char(my_cdf->probesetnames[i], 64, infile)){
       return 0;
     }
@@ -432,8 +432,8 @@ static int read_cdf_xda(const char *filename,cdf_xda *my_cdf){
 
 
 
-  my_cdf->qc_start = Calloc(my_cdf->header.n_qc_units,int);
-  my_cdf->units_start = Calloc(my_cdf->header.n_units,int);
+  my_cdf->qc_start = R_Calloc(my_cdf->header.n_qc_units,int);
+  my_cdf->units_start = R_Calloc(my_cdf->header.n_units,int);
 
   /*** Old code that might fail if there is 0 QCunits or 0 Units
        if (!fread_int32(my_cdf->qc_start,my_cdf->header.n_qc_units,infile) 
@@ -456,7 +456,7 @@ static int read_cdf_xda(const char *filename,cdf_xda *my_cdf){
 
   /* We will read in all the QC and Standard Units, rather than  
      random accessing what we need */
-  my_cdf->qc_units = Calloc(my_cdf->header.n_qc_units,cdf_qc_unit);
+  my_cdf->qc_units = R_Calloc(my_cdf->header.n_qc_units,cdf_qc_unit);
   
   
   for (i =0; i < my_cdf->header.n_qc_units; i++){
@@ -465,7 +465,7 @@ static int read_cdf_xda(const char *filename,cdf_xda *my_cdf){
     }
   }
     
-  my_cdf->units = Calloc(my_cdf->header.n_units,cdf_unit);
+  my_cdf->units = R_Calloc(my_cdf->header.n_units,cdf_unit);
 
 
   for (i=0; i < my_cdf->header.n_units; i++){
@@ -813,11 +813,11 @@ SEXP ReadCDFFile(SEXP filename){
 	cur_cells = my_cdf.units[i].unit_block[0].ncells;
 	cur_atoms = my_cdf.units[i].unit_block[0].natoms; 
 	if (strlen(my_cdf.units[i].unit_block[j].blockname) == 1){
-	  tmp_name = Calloc(strlen(my_cdf.probesetnames[i])+2,char);
+	  tmp_name = R_Calloc(strlen(my_cdf.probesetnames[i])+2,char);
 	  tmp_name = strcpy(tmp_name,my_cdf.probesetnames[i]);
 	  tmp_name = strcat(tmp_name,my_cdf.units[i].unit_block[j].blockname);
 	  SET_STRING_ELT(tempPSnames,which_psname,mkChar(tmp_name));
-	  Free(tmp_name);
+	  R_Free(tmp_name);
 	} else {
 	  SET_STRING_ELT(tempPSnames,which_psname,mkChar(my_cdf.units[i].unit_block[0].blockname));
 	}
@@ -871,11 +871,11 @@ SEXP ReadCDFFile(SEXP filename){
 	cur_cells = my_cdf.units[i].unit_block[1].ncells;
 	cur_atoms = my_cdf.units[i].unit_block[1].natoms; 
 	if (strlen(my_cdf.units[i].unit_block[j].blockname) == 1){
-	  tmp_name = Calloc(strlen(my_cdf.probesetnames[i])+2,char);
+	  tmp_name = R_Calloc(strlen(my_cdf.probesetnames[i])+2,char);
 	  tmp_name = strcpy(tmp_name,my_cdf.probesetnames[i]);
 	  tmp_name = strcat(tmp_name,my_cdf.units[i].unit_block[j].blockname);
 	  SET_STRING_ELT(tempPSnames,which_psname,mkChar(tmp_name));
-	  Free(tmp_name);
+	  R_Free(tmp_name);
 	} else {
 	  SET_STRING_ELT(tempPSnames,which_psname,mkChar(my_cdf.units[i].unit_block[1].blockname));
 	}

@@ -260,7 +260,7 @@ static tokenset *tokenize(char *str, char *delimiters){
   int i=0;
 
   char *current_token;
-  tokenset *my_tokenset = Calloc(1,tokenset);
+  tokenset *my_tokenset = R_Calloc(1,tokenset);
   my_tokenset->n=0;
   
   my_tokenset->tokens = NULL;
@@ -268,8 +268,8 @@ static tokenset *tokenize(char *str, char *delimiters){
   current_token = strtok(str,delimiters);
   while (current_token != NULL){
     my_tokenset->n++;
-    my_tokenset->tokens = Realloc(my_tokenset->tokens,my_tokenset->n,char*);
-    my_tokenset->tokens[i] = Calloc(strlen(current_token)+1,char);
+    my_tokenset->tokens = R_Realloc(my_tokenset->tokens,my_tokenset->n,char*);
+    my_tokenset->tokens[i] = R_Calloc(strlen(current_token)+1,char);
     strcpy(my_tokenset->tokens[i],current_token);
     i++;
     current_token = strtok(NULL,delimiters);
@@ -324,10 +324,10 @@ static void delete_tokens(tokenset *x){
   int i;
 
   for (i=0; i < x->n; i++){
-    Free(x->tokens[i]);
+    R_Free(x->tokens[i]);
   }
-  Free(x->tokens);
-  Free(x);
+  R_Free(x->tokens);
+  R_Free(x);
 }
 
 /*******************************************************************
@@ -473,7 +473,7 @@ static void read_cdf_header(FILE *infile,  cdf_text *mycdf, char* linebuffer){
   
   /* Read the Name */
   cur_tokenset = tokenize(linebuffer,"=\r\n");
-  mycdf->header.name = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+  mycdf->header.name = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
   strcpy(mycdf->header.name,get_token(cur_tokenset,1));
   delete_tokens(cur_tokenset);
 
@@ -507,7 +507,7 @@ static void read_cdf_header(FILE *infile,  cdf_text *mycdf, char* linebuffer){
   findStartsWith(infile,"ChipReference",linebuffer);
   cur_tokenset = tokenize(linebuffer,"=\r\n");
   if (cur_tokenset->n > 1){
-    mycdf->header.chipreference = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+    mycdf->header.chipreference = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
     strcpy(mycdf->header.chipreference,get_token(cur_tokenset,1));
   } else {
     mycdf->header.chipreference = NULL;
@@ -551,7 +551,7 @@ static void read_cdf_QCUnits_probes(FILE *infile,  cdf_text *mycdf, char* linebu
       mycdf->qc_units[index].qc_probes[i].y = atoi(get_token(cur_tokenset,2));
     }
     if (mycdf->qc_units[index].qccontains[2]){
-      mycdf->qc_units[index].qc_probes[i].probe=Calloc(strlen(get_token(cur_tokenset,3))+1,char);
+      mycdf->qc_units[index].qc_probes[i].probe=R_Calloc(strlen(get_token(cur_tokenset,3))+1,char);
       strcpy(mycdf->qc_units[index].qc_probes[i].probe,get_token(cur_tokenset,3));
     }
     if (mycdf->qc_units[index].qccontains[3]){
@@ -594,7 +594,7 @@ static void read_cdf_QCUnits(FILE *infile,  cdf_text *mycdf, char* linebuffer){
   tokenset *cur_tokenset;
   int i,j;
 
-  mycdf->qc_units = Calloc(mycdf->header.NumQCUnits,cdf_text_qc_unit);
+  mycdf->qc_units = R_Calloc(mycdf->header.NumQCUnits,cdf_text_qc_unit);
 
 
   for (i =0; i < mycdf->header.NumQCUnits; i++){
@@ -608,7 +608,7 @@ static void read_cdf_QCUnits(FILE *infile,  cdf_text *mycdf, char* linebuffer){
     cur_tokenset = tokenize(linebuffer,"=");
     mycdf->qc_units[i].n_probes = atoi(get_token(cur_tokenset,1));
     delete_tokens(cur_tokenset);
-    mycdf->qc_units[i].qc_probes = Calloc(mycdf->qc_units[i].n_probes,cdf_text_qc_probe);
+    mycdf->qc_units[i].qc_probes = R_Calloc(mycdf->qc_units[i].n_probes,cdf_text_qc_probe);
     
     /* Figure out which fields this QC unit has */
     findStartsWith(infile,"CellHeader",linebuffer);
@@ -671,19 +671,19 @@ static void read_cdf_unit_block_probes(FILE *infile,  cdf_text *mycdf, char* lin
     cur_tokenset = tokenize(linebuffer,"=\t\r\n");
     mycdf->units[unit].blocks[block].probes[i].x = atoi(get_token(cur_tokenset,1));
     mycdf->units[unit].blocks[block].probes[i].y = atoi(get_token(cur_tokenset,2));
-    mycdf->units[unit].blocks[block].probes[i].probe=Calloc(strlen(get_token(cur_tokenset,3))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].probe=R_Calloc(strlen(get_token(cur_tokenset,3))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].probe,get_token(cur_tokenset,3));
-    mycdf->units[unit].blocks[block].probes[i].feat=Calloc(strlen(get_token(cur_tokenset,4))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].feat=R_Calloc(strlen(get_token(cur_tokenset,4))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].feat,get_token(cur_tokenset,4));
-    mycdf->units[unit].blocks[block].probes[i].qual=Calloc(strlen(get_token(cur_tokenset,5))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].qual=R_Calloc(strlen(get_token(cur_tokenset,5))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].qual,get_token(cur_tokenset,5));
     mycdf->units[unit].blocks[block].probes[i].expos = atoi(get_token(cur_tokenset,6));
     mycdf->units[unit].blocks[block].probes[i].pos = atoi(get_token(cur_tokenset,7));
-    mycdf->units[unit].blocks[block].probes[i].cbase = Calloc(strlen(get_token(cur_tokenset,8))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].cbase = R_Calloc(strlen(get_token(cur_tokenset,8))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].cbase,get_token(cur_tokenset,8));
-    mycdf->units[unit].blocks[block].probes[i].pbase = Calloc(strlen(get_token(cur_tokenset,9))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].pbase = R_Calloc(strlen(get_token(cur_tokenset,9))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].pbase,get_token(cur_tokenset,9));
-    mycdf->units[unit].blocks[block].probes[i].tbase = Calloc(strlen(get_token(cur_tokenset,10))+1,char);
+    mycdf->units[unit].blocks[block].probes[i].tbase = R_Calloc(strlen(get_token(cur_tokenset,10))+1,char);
     strcpy(mycdf->units[unit].blocks[block].probes[i].tbase,get_token(cur_tokenset,10));
     mycdf->units[unit].blocks[block].probes[i].atom = atoi(get_token(cur_tokenset,11));
     mycdf->units[unit].blocks[block].probes[i].index = atoi(get_token(cur_tokenset,12));
@@ -721,7 +721,7 @@ static void read_cdf_unit_block(FILE *infile,  cdf_text *mycdf, char* linebuffer
 
     findStartsWith(infile,"Name",linebuffer);
     cur_tokenset = tokenize(linebuffer,"=\r\n");
-    mycdf->units[unit].blocks[i].name = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+    mycdf->units[unit].blocks[i].name = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
     strcpy(mycdf->units[unit].blocks[i].name,get_token(cur_tokenset,1));
     delete_tokens(cur_tokenset);
     /* Rprintf("%s\n",mycdf->units[unit].blocks[i].name); */
@@ -764,7 +764,7 @@ static void read_cdf_unit_block(FILE *infile,  cdf_text *mycdf, char* linebuffer
       mycdf->units[unit].blocks[i].direction = mycdf->units[unit].direction;
     }
     
-    mycdf->units[unit].blocks[i].probes = Calloc(mycdf->units[unit].blocks[i].num_cells,cdf_text_unit_block_probe);
+    mycdf->units[unit].blocks[i].probes = R_Calloc(mycdf->units[unit].blocks[i].num_cells,cdf_text_unit_block_probe);
 
     read_cdf_unit_block_probes(infile,mycdf,linebuffer,unit,i);
     
@@ -791,14 +791,14 @@ static void read_cdf_Units(FILE *infile,  cdf_text *mycdf, char* linebuffer){
   tokenset *cur_tokenset;
   int i;
 
-  mycdf->units = Calloc(mycdf->header.numberofunits,cdf_text_unit);
+  mycdf->units = R_Calloc(mycdf->header.numberofunits,cdf_text_unit);
 
   for (i =0; i < mycdf->header.numberofunits; i++){
     /* move to the next Unit section */
     AdvanceToSection(infile,"[Unit",linebuffer);
     findStartsWith(infile,"Name",linebuffer); 
     cur_tokenset = tokenize(linebuffer,"=\r\n");
-    mycdf->units[i].name = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+    mycdf->units[i].name = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
     strcpy(mycdf->units[i].name,get_token(cur_tokenset,1));
  
     delete_tokens(cur_tokenset);
@@ -837,7 +837,7 @@ static void read_cdf_Units(FILE *infile,  cdf_text *mycdf, char* linebuffer){
 
     /*Skip MutationType since only appears on one type of array */
     
-    mycdf->units[i].blocks = Calloc(mycdf->units[i].numberblocks,cdf_text_unit_block);
+    mycdf->units[i].blocks = R_Calloc(mycdf->units[i].numberblocks,cdf_text_unit_block);
 
   
     read_cdf_unit_block(infile,mycdf,linebuffer,i); 
@@ -894,7 +894,7 @@ static int read_cdf_text(const char *filename, cdf_text *mycdf){
   if (strncmp("GC3.0", get_token(cur_tokenset,1), 5) != 0){
     error("The file %s does not look like a version GC3.0 CDF file",filename);
   } else {
-    mycdf->header.version = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+    mycdf->header.version = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
     strcpy(mycdf->header.version,get_token(cur_tokenset,1));
   }
   delete_tokens(cur_tokenset);
@@ -922,34 +922,34 @@ static void dealloc_cdf_text(cdf_text *my_cdf){
   int i,j,k;
   
 
-   Free(my_cdf->header.version);
-   Free(my_cdf->header.name);
+   R_Free(my_cdf->header.version);
+   R_Free(my_cdf->header.name);
    if (my_cdf->header.chipreference != NULL)
-     Free(my_cdf->header.chipreference);
+     R_Free(my_cdf->header.chipreference);
 
    for (i =0; i <  my_cdf->header.NumQCUnits; i++){
      for (j=0; j < my_cdf->qc_units[i].n_probes; j++){
-       Free(my_cdf->qc_units[i].qc_probes[j].probe);
+       R_Free(my_cdf->qc_units[i].qc_probes[j].probe);
      }
-     Free(my_cdf->qc_units[i].qc_probes);
+     R_Free(my_cdf->qc_units[i].qc_probes);
    } 
 
    
    for (i =0; i <  my_cdf->header.numberofunits; i++){
      for (j=0; j < my_cdf->units[i].numberblocks; j++){
        for (k=0; k < my_cdf->units[i].blocks[j].num_cells;k++){
-	 Free(my_cdf->units[i].blocks[j].probes[k].probe);
-	 Free(my_cdf->units[i].blocks[j].probes[k].feat);
-	 Free(my_cdf->units[i].blocks[j].probes[k].qual);
-	 Free(my_cdf->units[i].blocks[j].probes[k].cbase);
-	 Free(my_cdf->units[i].blocks[j].probes[k].pbase);
-	 Free(my_cdf->units[i].blocks[j].probes[k].tbase);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].probe);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].feat);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].qual);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].cbase);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].pbase);
+	 R_Free(my_cdf->units[i].blocks[j].probes[k].tbase);
        }
-       Free(my_cdf->units[i].blocks[j].probes);
-       Free(my_cdf->units[i].blocks[j].name);
+       R_Free(my_cdf->units[i].blocks[j].probes);
+       R_Free(my_cdf->units[i].blocks[j].name);
      }
-     Free(my_cdf->units[i].blocks);
-     Free(my_cdf->units[i].name);
+     R_Free(my_cdf->units[i].blocks);
+     R_Free(my_cdf->units[i].name);
    } 
 
 

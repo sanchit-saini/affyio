@@ -181,7 +181,7 @@ static tokenset *tokenize(char *str, char *delimiters){
   int i=0;
 
   char *current_token;
-  tokenset *my_tokenset = Calloc(1,tokenset);
+  tokenset *my_tokenset = R_Calloc(1,tokenset);
   my_tokenset->n=0;
   
   my_tokenset->tokens = NULL;
@@ -192,8 +192,8 @@ static tokenset *tokenize(char *str, char *delimiters){
 #endif
   while (current_token != NULL){
     my_tokenset->n++;
-    my_tokenset->tokens = Realloc(my_tokenset->tokens,my_tokenset->n,char*);
-    my_tokenset->tokens[i] = Calloc(strlen(current_token)+1,char);
+    my_tokenset->tokens = R_Realloc(my_tokenset->tokens,my_tokenset->n,char*);
+    my_tokenset->tokens[i] = R_Calloc(strlen(current_token)+1,char);
     strcpy(my_tokenset->tokens[i],current_token);
     my_tokenset->tokens[i][(strlen(current_token))] = '\0';
     i++;
@@ -252,10 +252,10 @@ static void delete_tokens(tokenset *x){
   int i;
 
   for (i=0; i < x->n; i++){
-    Free(x->tokens[i]);
+    R_Free(x->tokens[i]);
   }
-  Free(x->tokens);
-  Free(x);
+  R_Free(x->tokens);
+  R_Free(x);
 }
 
 /*******************************************************************
@@ -439,7 +439,7 @@ static void determine_order_header0(char *header_str, header_0 *header0){
 
   tokenset *cur_tokenset;
   int i;
-  char *temp_str = Calloc(strlen(header_str) +1, char);
+  char *temp_str = R_Calloc(strlen(header_str) +1, char);
 
 
   strcpy(temp_str,header_str);
@@ -461,7 +461,7 @@ static void determine_order_header0(char *header_str, header_0 *header0){
   }
   delete_tokens(cur_tokenset);
 
-  Free(temp_str);
+  R_Free(temp_str);
 
 }
 
@@ -571,24 +571,24 @@ void read_clf_header(FILE *cur_file, char *buffer, clf_headers *header){
       /* Decode the Key/Value pair */
       if (strcmp(get_token(cur_tokenset,0),"chip_type") == 0){
 	if (header->n_chip_type == 0){
-	  header->chip_type = Calloc(1, char *);
+	  header->chip_type = R_Calloc(1, char *);
 	} else {
-	  header->chip_type = Realloc(header->chip_type, header->n_chip_type+1, char *);
+	  header->chip_type = R_Realloc(header->chip_type, header->n_chip_type+1, char *);
 	}
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->chip_type[header->n_chip_type] = temp_str;
 	header->n_chip_type++;
       } else if (strcmp(get_token(cur_tokenset,0), "lib_set_name") == 0){
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->lib_set_name = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "lib_set_version") == 0){
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->lib_set_version = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "clf_format_version") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->clf_format_version = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "rows") == 0) {
@@ -596,39 +596,39 @@ void read_clf_header(FILE *cur_file, char *buffer, clf_headers *header){
       } else if (strcmp(get_token(cur_tokenset,0), "cols") == 0) {
 	header->cols = atoi(get_token(cur_tokenset,1));
       } else if (strcmp(get_token(cur_tokenset,0), "header0") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->header0_str = temp_str;
-	header->header0 = Calloc(1,header_0);
+	header->header0 = R_Calloc(1,header_0);
 	determine_order_header0(header->header0_str,header->header0);
       } else if (strcmp(get_token(cur_tokenset,0), "create_date") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->create_date = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "order") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->order = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "sequential") == 0) {
 	header->sequential = atoi(get_token(cur_tokenset,1));
       } else if (strcmp(get_token(cur_tokenset,0), "guid") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->guid = temp_str;
       } else {
 	/* not one of the recognised header types */
 	if ( header->n_other_headers == 0){
-	  header->other_headers_keys = Calloc(1, char *);
-	  header->other_headers_values = Calloc(1, char *);
+	  header->other_headers_keys = R_Calloc(1, char *);
+	  header->other_headers_values = R_Calloc(1, char *);
 	} else {
-	  header->other_headers_keys = Realloc(header->other_headers_keys,header->n_other_headers+1, char *);
-	  header->other_headers_values = Realloc(header->other_headers_values,header->n_other_headers+1, char *);
-	  header->chip_type = Realloc(header->chip_type, header->n_chip_type+1, char *);
+	  header->other_headers_keys = R_Realloc(header->other_headers_keys,header->n_other_headers+1, char *);
+	  header->other_headers_values = R_Realloc(header->other_headers_values,header->n_other_headers+1, char *);
+	  header->chip_type = R_Realloc(header->chip_type, header->n_chip_type+1, char *);
 	}
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->other_headers_values[header->n_other_headers] = temp_str;
-	temp_str = Calloc(strlen(get_token(cur_tokenset,0)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,0)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,0));
 	header->other_headers_keys[header->n_other_headers] = temp_str;
 	header->n_other_headers++;
@@ -662,7 +662,7 @@ void read_clf_data(FILE *cur_file, char *buffer, clf_data *data, clf_headers *he
     data->probe_id = NULL;
     return;
   } else {
-    data->probe_id = Calloc((header->rows)*(header->cols), int);
+    data->probe_id = R_Calloc((header->rows)*(header->cols), int);
     cur_tokenset = tokenize(buffer,"\t\r\n");
     cur_id = atoi(get_token(cur_tokenset,header->header0->probe_id));
     x = atoi(get_token(cur_tokenset,header->header0->x));
@@ -700,54 +700,54 @@ void dealloc_clf_headers(clf_headers *header){
 
   if (header->n_chip_type > 0){
     for (i = 0; i < header->n_chip_type; i++){
-      Free(header->chip_type[i]);
+      R_Free(header->chip_type[i]);
     }
-    Free(header->chip_type);
+    R_Free(header->chip_type);
   }
       
   if (header->lib_set_name != NULL){
-    Free(header->lib_set_name);
+    R_Free(header->lib_set_name);
   }
 
   if (header->lib_set_version != NULL){
-    Free(header->lib_set_version);
+    R_Free(header->lib_set_version);
   }
 
   if (header->clf_format_version != NULL){
-    Free(header->clf_format_version);
+    R_Free(header->clf_format_version);
   }
 
   if (header->header0_str != NULL){
-    Free(header->header0_str);
-    Free(header->header0);
+    R_Free(header->header0_str);
+    R_Free(header->header0);
   }
    
   if (header->order != NULL){
-    Free(header->order);
+    R_Free(header->order);
   }
    
   if (header->create_date != NULL){
-    Free(header->create_date);
+    R_Free(header->create_date);
   }
 
   if (header->guid != NULL){
-    Free(header->guid);
+    R_Free(header->guid);
   }
 
   if (header->n_other_headers > 0){
     for (i = 0; i < header->n_other_headers; i++){
-      Free(header->other_headers_keys[i]);
-      Free(header->other_headers_values[i]);
+      R_Free(header->other_headers_keys[i]);
+      R_Free(header->other_headers_values[i]);
     }
-    Free(header->other_headers_keys);
-    Free(header->other_headers_values);
+    R_Free(header->other_headers_keys);
+    R_Free(header->other_headers_values);
   }
 }
 
 
 void dealloc_clf_data(clf_data *data){
   if (data->probe_id != NULL){
-    Free(data->probe_id);
+    R_Free(data->probe_id);
   }
 }
 
@@ -757,13 +757,13 @@ void dealloc_clf_file(clf_file* my_clf){
 
   if (my_clf->headers != NULL){
     dealloc_clf_headers(my_clf->headers);
-    Free(my_clf->headers);
+    R_Free(my_clf->headers);
   }
 
   
   if (my_clf->data !=NULL){
     dealloc_clf_data(my_clf->data);
-    Free(my_clf->data);
+    R_Free(my_clf->data);
   }
 
 
@@ -850,20 +850,20 @@ void read_clf_file(char **filename){
 
   FILE *cur_file;
   clf_file my_clf;
-  char *buffer = Calloc(1024, char);
+  char *buffer = R_Calloc(1024, char);
 
 
   
   cur_file = open_clf_file(filename[0]);
   
-  my_clf.headers = Calloc(1, clf_headers);
-  my_clf.data = Calloc(1, clf_data);
+  my_clf.headers = R_Calloc(1, clf_headers);
+  my_clf.data = R_Calloc(1, clf_data);
 
   read_clf_header(cur_file,buffer,my_clf.headers);
   if (validate_clf_header(my_clf.headers))
     read_clf_data(cur_file, buffer, my_clf.data, my_clf.headers);
 
-  Free(buffer);
+  R_Free(buffer);
   dealloc_clf_file(&my_clf);
   fclose(cur_file);
 

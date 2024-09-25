@@ -55,13 +55,13 @@
 
 
 static void Free_ASTRING(ASTRING *string){
-  Free(string->value);
+  R_Free(string->value);
   string->len =0;
 }
 
 
 static void Free_AWSTRING(AWSTRING *string){
-  Free(string->value);
+  R_Free(string->value);
   string->len =0;
 
 
@@ -97,15 +97,15 @@ void Free_generic_data_header(generic_data_header *header){
   for (i =0; i <  header->n_name_type_value; i++){
     Free_nvt_triplet(&(header->name_type_value[i]));
   }
-  Free(header->name_type_value);
+  R_Free(header->name_type_value);
     
   for (i=0; i < (header->n_parent_headers); i++){
     temp = (generic_data_header *)header->parent_headers[i];
     Free_generic_data_header(temp);
-    Free(temp);
+    R_Free(temp);
   }
   if (header->parent_headers != 0)
-    Free(header->parent_headers);
+    R_Free(header->parent_headers);
 
 
 }
@@ -136,19 +136,19 @@ void Free_generic_data_set(generic_data_set *data_set){
         Free_AWSTRING(&((AWSTRING *)data_set->Data[j])[i]);
 	}	
     }
-    Free(data_set->Data[j]);
+    R_Free(data_set->Data[j]);
   }
-  Free(data_set->Data);
+  R_Free(data_set->Data);
 
   for (j=0; j < data_set->ncols; j++){
     Free_nvts_triplet(&(data_set->col_name_type_value[j]));
   }
-  Free(data_set->col_name_type_value);
+  R_Free(data_set->col_name_type_value);
 
   for (j =0; j <  data_set->n_name_type_value; j++){
     Free_nvt_triplet(&(data_set->name_type_value[j]));
   }
-  Free(data_set->name_type_value);
+  R_Free(data_set->name_type_value);
 
   Free_AWSTRING(&(data_set->data_set_name));
   
@@ -159,7 +159,7 @@ static int fread_ASTRING(ASTRING *destination, FILE *instream){
 
   fread_be_int32(&(destination->len),1,instream);
   if (destination->len > 0){
-    destination->value = Calloc(destination->len+1,char);
+    destination->value = R_Calloc(destination->len+1,char);
     fread_be_char(destination->value,destination->len,instream);
   } else {
     destination->value = 0;
@@ -173,7 +173,7 @@ static int fread_ASTRING_fw(ASTRING *destination, FILE *instream, int length){
 
   fread_be_int32(&(destination->len),1,instream);
   if (destination->len > 0){
-    destination->value = Calloc(destination->len+1,char);
+    destination->value = R_Calloc(destination->len+1,char);
     fread_be_char(destination->value,destination->len,instream);
     if (length > destination->len){
 	fseek(instream, length-destination->len, SEEK_CUR);
@@ -194,7 +194,7 @@ static int fread_AWSTRING(AWSTRING *destination, FILE *instream){
 
   fread_be_int32(&(destination->len),1,instream);
   if ((destination->len) > 0){
-    destination->value = Calloc(destination->len+1,wchar_t);
+    destination->value = R_Calloc(destination->len+1,wchar_t);
   
     for (i=0; i < destination->len; i++){
       fread_be_uint16(&temp,1,instream);
@@ -216,7 +216,7 @@ static int fread_AWSTRING_fw(AWSTRING *destination, FILE *instream, int length){
 
   fread_be_int32(&(destination->len),1,instream);
   if ((destination->len) > 0){
-    destination->value = Calloc(destination->len+1,wchar_t);
+    destination->value = R_Calloc(destination->len+1,wchar_t);
   
     for (i=0; i < destination->len; i++){
       fread_be_uint16(&temp,1,instream);
@@ -267,7 +267,7 @@ static char *decode_ASCII(ASTRING value){
   
   char *return_value;
 
-  return_value = Calloc(value.len+1,char);
+  return_value = R_Calloc(value.len+1,char);
   
   memcpy(return_value, value.value, value.len);
 
@@ -285,12 +285,12 @@ static wchar_t *decode_TEXT(ASTRING value){
   int i;
 
   uint32_t len = value.len/ sizeof(uint16_t);
-  wchar_t* return_value = Calloc(len+1,wchar_t);
+  wchar_t* return_value = R_Calloc(len+1,wchar_t);
   ASTRING temp;
   uint16_t *contents;
 
   temp.len = value.len;
-  temp.value = Calloc(value.len, char);
+  temp.value = R_Calloc(value.len, char);
   memcpy(temp.value, value.value,value.len);
   
   contents = (uint16_t *)temp.value;
@@ -549,7 +549,7 @@ char *decode_MIME_value_toASCII(nvt_triplet triplet, AffyMIMEtypes mimetype, voi
 
   if (mimetype == PLAINTEXT){
     temp2 = decode_TEXT(triplet.value);
-    temp = Calloc(triplet.value.len/2 +1, char);
+    temp = R_Calloc(triplet.value.len/2 +1, char);
     wcstombs(temp,temp2,triplet.value.len/2 + 1);
     *size = strlen(temp);
     result = temp;
@@ -558,7 +558,7 @@ char *decode_MIME_value_toASCII(nvt_triplet triplet, AffyMIMEtypes mimetype, voi
 
 
   /* 64 here is a bit hackish */
-  temp = Calloc(64,char);
+  temp = R_Calloc(64,char);
   if (mimetype == UINT8){
     temp_uint8 = decode_UINT8_t(triplet.value);
     sprintf(temp,"%u",temp_uint8);
@@ -648,7 +648,7 @@ nvt_triplet* find_nvt(generic_data_header *data_header,char *name){
   
 
 
-  wname = Calloc(len+1, wchar_t);
+  wname = R_Calloc(len+1, wchar_t);
 
 
   mbstowcs(wname, name, len);
@@ -669,7 +669,7 @@ nvt_triplet* find_nvt(generic_data_header *data_header,char *name){
     }
   }
   
-  Free(wname);
+  R_Free(wname);
   return returnvalue;
 }
 
@@ -721,7 +721,7 @@ int read_generic_data_header(generic_data_header *data_header, FILE *instream){
     return 0;
   }
   
-  data_header->name_type_value = Calloc(data_header->n_name_type_value, nvt_triplet);
+  data_header->name_type_value = R_Calloc(data_header->n_name_type_value, nvt_triplet);
 
   for (i =0; i < data_header->n_name_type_value; i++){
     if (!fread_nvt_triplet(&data_header->name_type_value[i],instream)){
@@ -734,12 +734,12 @@ int read_generic_data_header(generic_data_header *data_header, FILE *instream){
   }
   
   if (data_header->n_parent_headers > 0){
-    data_header->parent_headers = Calloc(data_header->n_parent_headers,void *);
+    data_header->parent_headers = R_Calloc(data_header->n_parent_headers,void *);
   } else {
     data_header->parent_headers = 0;
   }
   for (i =0; i < data_header->n_parent_headers; i++){
-    temp_header = (generic_data_header *)Calloc(1,generic_data_header);
+    temp_header = (generic_data_header *)R_Calloc(1,generic_data_header);
     if (!read_generic_data_header(temp_header,instream)){
       return 0;
     }
@@ -776,7 +776,7 @@ int read_generic_data_set(generic_data_set *data_set, FILE *instream){
   }
   
     
-  data_set->name_type_value = Calloc(data_set->n_name_type_value, nvt_triplet);
+  data_set->name_type_value = R_Calloc(data_set->n_name_type_value, nvt_triplet);
 
   for (i =0; i < data_set->n_name_type_value; i++){
     if (!fread_nvt_triplet(&data_set->name_type_value[i],instream)){
@@ -788,7 +788,7 @@ int read_generic_data_set(generic_data_set *data_set, FILE *instream){
     return 0;
   }
   
-  data_set->col_name_type_value = Calloc(data_set->ncols,col_nvts_triplet);
+  data_set->col_name_type_value = R_Calloc(data_set->ncols,col_nvts_triplet);
 
   for (i =0; i < data_set->ncols; i++){
     if (!fread_nvts_triplet(&data_set->col_name_type_value[i], instream)){
@@ -800,29 +800,29 @@ int read_generic_data_set(generic_data_set *data_set, FILE *instream){
     return 0;
   }
 
-  data_set->Data = Calloc(data_set->ncols, void *);
+  data_set->Data = R_Calloc(data_set->ncols, void *);
 
   for (i=0; i < data_set->ncols; i++){
     switch(data_set->col_name_type_value[i].type){
-    case 0: data_set->Data[i] = Calloc(data_set->nrows,char);
+    case 0: data_set->Data[i] = R_Calloc(data_set->nrows,char);
       break;
-    case 1: data_set->Data[i] = Calloc(data_set->nrows,unsigned char);
+    case 1: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned char);
       break;
-    case 2: data_set->Data[i] = Calloc(data_set->nrows,short);
+    case 2: data_set->Data[i] = R_Calloc(data_set->nrows,short);
       break;
-    case 3: data_set->Data[i] = Calloc(data_set->nrows,unsigned short);
+    case 3: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned short);
       break;
-    case 4: data_set->Data[i] = Calloc(data_set->nrows,int);
+    case 4: data_set->Data[i] = R_Calloc(data_set->nrows,int);
       break;
-    case 5: data_set->Data[i] = Calloc(data_set->nrows,unsigned int);
+    case 5: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned int);
       break;
-    case 6: data_set->Data[i] = Calloc(data_set->nrows,float);
+    case 6: data_set->Data[i] = R_Calloc(data_set->nrows,float);
       break;
-/*    case 7: data_set->Data[i] = Calloc(data_set->nrows,double);
+/*    case 7: data_set->Data[i] = R_Calloc(data_set->nrows,double);
       break; */
-    case 7: data_set->Data[i] = Calloc(data_set->nrows,ASTRING);
+    case 7: data_set->Data[i] = R_Calloc(data_set->nrows,ASTRING);
       break;
-    case 8: data_set->Data[i] = Calloc(data_set->nrows,AWSTRING);
+    case 8: data_set->Data[i] = R_Calloc(data_set->nrows,AWSTRING);
       break;
     }
     
@@ -911,7 +911,7 @@ static int gzread_ASTRING(ASTRING *destination, gzFile instream){
 
   gzread_be_int32(&(destination->len),1,instream);
   if (destination->len > 0){
-    destination->value = Calloc(destination->len+1,char);
+    destination->value = R_Calloc(destination->len+1,char);
     gzread_be_char(destination->value,destination->len,instream);
   } else {
     destination->value = 0;
@@ -925,7 +925,7 @@ static int gzread_ASTRING_fw(ASTRING *destination, gzFile instream, int length){
 
   gzread_be_int32(&(destination->len),1,instream);
   if (destination->len > 0){
-    destination->value = Calloc(destination->len+1,char);
+    destination->value = R_Calloc(destination->len+1,char);
     gzread_be_char(destination->value,destination->len,instream);  
     if (length > destination->len){
 	gzseek(instream, length-destination->len, SEEK_CUR);
@@ -946,7 +946,7 @@ static int gzread_AWSTRING(AWSTRING *destination, gzFile instream){
 
   gzread_be_int32(&(destination->len),1,instream);
   if ((destination->len) > 0){
-    destination->value = Calloc(destination->len+1,wchar_t);
+    destination->value = R_Calloc(destination->len+1,wchar_t);
   
     for (i=0; i < destination->len; i++){
       gzread_be_uint16(&temp,1,instream);
@@ -968,7 +968,7 @@ static int gzread_AWSTRING_fw(AWSTRING *destination, gzFile instream, int length
 
   gzread_be_int32(&(destination->len),1,instream);
   if ((destination->len) > 0){
-    destination->value = Calloc(destination->len+1,wchar_t);
+    destination->value = R_Calloc(destination->len+1,wchar_t);
   
     for (i=0; i < destination->len; i++){
       gzread_be_uint16(&temp,1,instream);
@@ -1053,7 +1053,7 @@ int gzread_generic_data_header(generic_data_header *data_header, gzFile instream
     return 0;
   }
   
-  data_header->name_type_value = Calloc(data_header->n_name_type_value, nvt_triplet);
+  data_header->name_type_value = R_Calloc(data_header->n_name_type_value, nvt_triplet);
 
   for (i =0; i < data_header->n_name_type_value; i++){
     if (!gzread_nvt_triplet(&data_header->name_type_value[i],instream)){
@@ -1065,10 +1065,10 @@ int gzread_generic_data_header(generic_data_header *data_header, gzFile instream
     return 0;
   }
   
-  data_header->parent_headers = Calloc(data_header->n_parent_headers,void *);
+  data_header->parent_headers = R_Calloc(data_header->n_parent_headers,void *);
 
   for (i =0; i < data_header->n_parent_headers; i++){
-    data_header->parent_headers[i] = (generic_data_header *)Calloc(1,generic_data_header);
+    data_header->parent_headers[i] = (generic_data_header *)R_Calloc(1,generic_data_header);
     if (!gzread_generic_data_header((generic_data_header *)data_header->parent_headers[i],instream)){
       return 0;
     }
@@ -1108,7 +1108,7 @@ int gzread_generic_data_set(generic_data_set *data_set, gzFile instream){
   }
   
     
-  data_set->name_type_value = Calloc(data_set->n_name_type_value, nvt_triplet);
+  data_set->name_type_value = R_Calloc(data_set->n_name_type_value, nvt_triplet);
 
   for (i =0; i < data_set->n_name_type_value; i++){
     if (!gzread_nvt_triplet(&data_set->name_type_value[i],instream)){
@@ -1120,7 +1120,7 @@ int gzread_generic_data_set(generic_data_set *data_set, gzFile instream){
     return 0;
   }
   
-  data_set->col_name_type_value = Calloc(data_set->ncols,col_nvts_triplet);
+  data_set->col_name_type_value = R_Calloc(data_set->ncols,col_nvts_triplet);
 
   for (i =0; i < data_set->ncols; i++){
     if (!gzread_nvts_triplet(&data_set->col_name_type_value[i], instream)){
@@ -1132,29 +1132,29 @@ int gzread_generic_data_set(generic_data_set *data_set, gzFile instream){
     return 0;
   }
 
-  data_set->Data = Calloc(data_set->ncols, void *);
+  data_set->Data = R_Calloc(data_set->ncols, void *);
 
   for (i=0; i < data_set->ncols; i++){
     switch(data_set->col_name_type_value[i].type){
-    case 0: data_set->Data[i] = Calloc(data_set->nrows,char);
+    case 0: data_set->Data[i] = R_Calloc(data_set->nrows,char);
       break;
-    case 1: data_set->Data[i] = Calloc(data_set->nrows,unsigned char);
+    case 1: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned char);
       break;
-    case 2: data_set->Data[i] = Calloc(data_set->nrows,short);
+    case 2: data_set->Data[i] = R_Calloc(data_set->nrows,short);
       break;
-    case 3: data_set->Data[i] = Calloc(data_set->nrows,unsigned short);
+    case 3: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned short);
       break;
-    case 4: data_set->Data[i] = Calloc(data_set->nrows,int);
+    case 4: data_set->Data[i] = R_Calloc(data_set->nrows,int);
       break;
-    case 5: data_set->Data[i] = Calloc(data_set->nrows,unsigned int);
+    case 5: data_set->Data[i] = R_Calloc(data_set->nrows,unsigned int);
       break;
-    case 6: data_set->Data[i] = Calloc(data_set->nrows,float);
+    case 6: data_set->Data[i] = R_Calloc(data_set->nrows,float);
       break;
-/*    case 7: data_set->Data[i] = Calloc(data_set->nrows,double);
+/*    case 7: data_set->Data[i] = R_Calloc(data_set->nrows,double);
       break; */
-    case 7: data_set->Data[i] = Calloc(data_set->nrows,ASTRING);
+    case 7: data_set->Data[i] = R_Calloc(data_set->nrows,ASTRING);
       break;
-    case 8: data_set->Data[i] = Calloc(data_set->nrows,AWSTRING);
+    case 8: data_set->Data[i] = R_Calloc(data_set->nrows,AWSTRING);
       break;
     }
     
@@ -1263,13 +1263,13 @@ static void print_ASTRING(ASTRING string){
 
 static void print_AWSTRING(AWSTRING string){
   if (string.len > 0){
-    char *temp = Calloc(string.len+1,char);
+    char *temp = R_Calloc(string.len+1,char);
     wcstombs(temp, string.value, string.len);
     
     Rprintf("%s",temp);
     
     
-    Free(temp);
+    R_Free(temp);
   }
 }
 
@@ -1296,30 +1296,30 @@ static void print_decode_nvt_triplet(nvt_triplet triplet){
   if (!wcscmp(triplet.type.value,L"text/ascii")){
     temp2 = decode_ASCII(triplet.value);
     Rprintf("Its a Ascii String  value is %s\n",temp2);
-    Free(temp2);
+    R_Free(temp2);
 
     Rprintf("Now Trying it again. But using exposed function\n");
     temp2 = decode_MIME_value(triplet, determine_MIMETYPE(triplet),temp2,&size);
     Rprintf("Its a Ascii String  value is %s with size %d\n",temp2, size);
-    Free(temp2);
+    R_Free(temp2);
   }
   
   if (!wcscmp(triplet.type.value,L"text/plain")){
     temp = decode_TEXT(triplet.value);
-    temp2 = Calloc(triplet.value.len/2 +1, char);
+    temp2 = R_Calloc(triplet.value.len/2 +1, char);
     wcstombs(temp2,temp,triplet.value.len/2 + 1);
     Rprintf("Text/plain String is %s\n",temp2);
-    Free(temp);
-    Free(temp2);
+    R_Free(temp);
+    R_Free(temp2);
 
     Rprintf("Now Trying it again. But using exposed function\n");
     
     temp = (wchar_t *)decode_MIME_value(triplet, determine_MIMETYPE(triplet),temp,&size);
-    temp2 = Calloc(size +1, char);
+    temp2 = R_Calloc(size +1, char);
     wcstombs(temp2,temp,size);
     Rprintf("Its a Text/plain string value is %s with size %d\n",temp2, size);
-    Free(temp2);
-    Free(temp);
+    R_Free(temp2);
+    R_Free(temp);
   }
 
   if (!wcscmp(triplet.type.value,L"text/x-calvin-integer-32")){
@@ -1627,21 +1627,21 @@ static SEXP decode_nvt_triplet(nvt_triplet triplet){
     PROTECT(return_value=allocVector(STRSXP,1));
     SET_STRING_ELT(return_value,0,mkChar(temp2));
     UNPROTECT(1);
-    Free(temp2);
+    R_Free(temp2);
      return(return_value);	
   }
   
   if (!wcscmp(triplet.type.value,L"text/plain")){
     temp = (wchar_t *)decode_MIME_value(triplet, determine_MIMETYPE(triplet),temp,&size);
-    temp2 = Calloc(size +1, char);
+    temp2 = R_Calloc(size +1, char);
     wcstombs(temp2,temp,size);
  
     PROTECT(return_value=allocVector(STRSXP,1));
     SET_STRING_ELT(return_value,0,mkChar(temp2));
     UNPROTECT(1);
 
-    Free(temp2);
-    Free(temp); 
+    R_Free(temp2);
+    R_Free(temp); 
     return(return_value);	
   }
 
@@ -1716,20 +1716,20 @@ static SEXP data_header_R_List(generic_data_header *my_data_header){
 
   PROTECT(tmp_sexp= allocVector(STRSXP,1));
   if (my_data_header->Date_time.len > 0){
-    temp = Calloc(my_data_header->Date_time.len+1,char);
+    temp = R_Calloc(my_data_header->Date_time.len+1,char);
     wcstombs(temp, my_data_header->Date_time.value, my_data_header->Date_time.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,2,tmp_sexp);
   UNPROTECT(1); 
  
   PROTECT(tmp_sexp= allocVector(STRSXP,1));
   if (my_data_header->locale.len > 0){
-    temp = Calloc(my_data_header->locale.len+1,char);
+    temp = R_Calloc(my_data_header->locale.len+1,char);
     wcstombs(temp, my_data_header->locale.value, my_data_header->locale.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,3,tmp_sexp);
   UNPROTECT(1); 
@@ -1743,10 +1743,10 @@ static SEXP data_header_R_List(generic_data_header *my_data_header){
   PROTECT(tmp_names =  allocVector(STRSXP,my_data_header->n_name_type_value));
   for (i=0; i < my_data_header->n_name_type_value; i++){
      SET_VECTOR_ELT(tmp_sexp,i,decode_nvt_triplet(my_data_header->name_type_value[i]));
-     temp = Calloc(my_data_header->name_type_value[i].name.len+1,char);
+     temp = R_Calloc(my_data_header->name_type_value[i].name.len+1,char);
      wcstombs(temp, my_data_header->name_type_value[i].name.value, my_data_header->name_type_value[i].name.len);
      SET_STRING_ELT(tmp_names,i,mkChar(temp));
-     Free(temp);
+     R_Free(temp);
   } 
   setAttrib(tmp_sexp, R_NamesSymbol, tmp_names); 
   SET_VECTOR_ELT(return_value,5,tmp_sexp);
@@ -1811,20 +1811,20 @@ static SEXP data_header_R_List_full(generic_data_header *my_data_header){
 
   PROTECT(tmp_sexp= allocVector(STRSXP,1));
   if (my_data_header->Date_time.len > 0){
-    temp = Calloc(my_data_header->Date_time.len+1,char);
+    temp = R_Calloc(my_data_header->Date_time.len+1,char);
     wcstombs(temp, my_data_header->Date_time.value, my_data_header->Date_time.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,2,tmp_sexp);
   UNPROTECT(1); 
  
   PROTECT(tmp_sexp= allocVector(STRSXP,1));
   if (my_data_header->locale.len > 0){
-    temp = Calloc(my_data_header->locale.len+1,char);
+    temp = R_Calloc(my_data_header->locale.len+1,char);
     wcstombs(temp, my_data_header->locale.value, my_data_header->locale.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,3,tmp_sexp);
   UNPROTECT(1); 
@@ -1841,14 +1841,14 @@ static SEXP data_header_R_List_full(generic_data_header *my_data_header){
   
   for (i=0; i < my_data_header->n_name_type_value; i++){
      SET_VECTOR_ELT(tmp_value,i,decode_nvt_triplet(my_data_header->name_type_value[i]));
-     temp = Calloc(my_data_header->name_type_value[i].name.len+1,char);
+     temp = R_Calloc(my_data_header->name_type_value[i].name.len+1,char);
      wcstombs(temp, my_data_header->name_type_value[i].name.value, my_data_header->name_type_value[i].name.len);
      SET_STRING_ELT(tmp_names,i,mkChar(temp));
-     Free(temp);
-     temp = Calloc(my_data_header->name_type_value[i].type.len+1,char);
+     R_Free(temp);
+     temp = R_Calloc(my_data_header->name_type_value[i].type.len+1,char);
      wcstombs(temp, my_data_header->name_type_value[i].type.value, my_data_header->name_type_value[i].type.len);
      SET_STRING_ELT(tmp_type,i,mkChar(temp));
-     Free(temp);
+     R_Free(temp);
 
      
   } 
@@ -1906,10 +1906,10 @@ static SEXP data_group_R_list(generic_data_group *my_data_group){
   PROTECT(return_value =  allocVector(VECSXP,2));
   if (my_data_group->data_group_name.len > 0){
      PROTECT(tmp_sexp= allocVector(STRSXP,1)); 
-     temp = Calloc(my_data_group->data_group_name.len+1,char);
+     temp = R_Calloc(my_data_group->data_group_name.len+1,char);
      wcstombs(temp, my_data_group->data_group_name.value, my_data_group->data_group_name.len);
      SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-     Free(temp);
+     R_Free(temp);
   }	
   SET_VECTOR_ELT(return_value,0,tmp_sexp);
   UNPROTECT(1);
@@ -1938,10 +1938,10 @@ static SEXP generic_data_set_R_List(generic_data_set *my_data_set){
   
   PROTECT(tmp_sexp= allocVector(STRSXP,1));  
   if (my_data_set->data_set_name.len > 0){
-    temp = Calloc(my_data_set->data_set_name.len+1,char);
+    temp = R_Calloc(my_data_set->data_set_name.len+1,char);
     wcstombs(temp, my_data_set->data_set_name.value, my_data_set->data_set_name.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,0,tmp_sexp);
   UNPROTECT(1);
@@ -1951,10 +1951,10 @@ static SEXP generic_data_set_R_List(generic_data_set *my_data_set){
   for (i=0; i < my_data_set->n_name_type_value; i++){
     //print_nvt_triplet(data_set.name_type_value[i]);
     SET_VECTOR_ELT(tmp_sexp,i,decode_nvt_triplet(my_data_set->name_type_value[i]));
-    temp = Calloc(my_data_set->name_type_value[i].name.len+1,char);
+    temp = R_Calloc(my_data_set->name_type_value[i].name.len+1,char);
     wcstombs(temp, my_data_set->name_type_value[i].name.value, my_data_set->name_type_value[i].name.len);
     SET_STRING_ELT(tmp_names,i,mkChar(temp));
-    Free(temp);
+    R_Free(temp);
   } 
   setAttrib(tmp_sexp, R_NamesSymbol, tmp_names); 
   SET_VECTOR_ELT(return_value,1,tmp_sexp);
@@ -1964,10 +1964,10 @@ static SEXP generic_data_set_R_List(generic_data_set *my_data_set){
   SET_VECTOR_ELT(return_value,2,tmp_sexp);
   PROTECT(tmp_names =  allocVector(STRSXP,my_data_set->ncols));
   for (i=0; i < my_data_set->ncols; i++){
-     temp = Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
+     temp = R_Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
      wcstombs(temp, my_data_set->col_name_type_value[i].name.value, my_data_set->col_name_type_value[i].name.len);
      SET_STRING_ELT(tmp_names,i,mkChar(temp));
-     Free(temp);
+     R_Free(temp);
   }
   setAttrib(tmp_sexp, R_NamesSymbol, tmp_names); 
   UNPROTECT(2);
@@ -1997,10 +1997,10 @@ static SEXP generic_data_set_R_List_full(generic_data_set *my_data_set){
   
   PROTECT(tmp_sexp= allocVector(STRSXP,1));  
   if (my_data_set->data_set_name.len > 0){
-    temp = Calloc(my_data_set->data_set_name.len+1,char);
+    temp = R_Calloc(my_data_set->data_set_name.len+1,char);
     wcstombs(temp, my_data_set->data_set_name.value, my_data_set->data_set_name.len);
     SET_STRING_ELT(tmp_sexp,0,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
   }
   SET_VECTOR_ELT(return_value,0,tmp_sexp);
   UNPROTECT(1);
@@ -2011,14 +2011,14 @@ static SEXP generic_data_set_R_List_full(generic_data_set *my_data_set){
   PROTECT(tmp_value =  allocVector(VECSXP,my_data_set->n_name_type_value));
   for (i=0; i < my_data_set->n_name_type_value; i++){
     SET_VECTOR_ELT(tmp_value,i,decode_nvt_triplet(my_data_set->name_type_value[i]));
-    temp = Calloc(my_data_set->name_type_value[i].name.len+1,char);
+    temp = R_Calloc(my_data_set->name_type_value[i].name.len+1,char);
     wcstombs(temp, my_data_set->name_type_value[i].name.value, my_data_set->name_type_value[i].name.len);
     SET_STRING_ELT(tmp_names,i,mkChar(temp));
-    Free(temp);
-    temp = Calloc(my_data_set->name_type_value[i].type.len+1,char);
+    R_Free(temp);
+    temp = R_Calloc(my_data_set->name_type_value[i].type.len+1,char);
     wcstombs(temp, my_data_set->name_type_value[i].type.value, my_data_set->name_type_value[i].type.len);
     SET_STRING_ELT(tmp_type,i,mkChar(temp));
-    Free(temp);
+    R_Free(temp);
   } 
   setAttrib(tmp_value, R_NamesSymbol, tmp_names);
   SET_VECTOR_ELT(tmp_sexp,0,tmp_names);
@@ -2031,10 +2031,10 @@ static SEXP generic_data_set_R_List_full(generic_data_set *my_data_set){
   SET_VECTOR_ELT(return_value,2,tmp_sexp);
   PROTECT(tmp_names =  allocVector(STRSXP,my_data_set->ncols));
   for (i=0; i < my_data_set->ncols; i++){
-     temp = Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
+     temp = R_Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
      wcstombs(temp, my_data_set->col_name_type_value[i].name.value, my_data_set->col_name_type_value[i].name.len);
      SET_STRING_ELT(tmp_names,i,mkChar(temp));
-     Free(temp);
+     R_Free(temp);
   }
   setAttrib(tmp_sexp, R_NamesSymbol, tmp_names); 
   UNPROTECT(2);
@@ -2045,10 +2045,10 @@ static SEXP generic_data_set_R_List_full(generic_data_set *my_data_set){
   PROTECT(tmp_value =  allocVector(INTSXP,my_data_set->ncols));
   PROTECT(tmp_size =  allocVector(INTSXP,my_data_set->ncols));
   for (i=0; i < my_data_set->ncols; i++){
-    temp = Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
+    temp = R_Calloc(my_data_set->col_name_type_value[i].name.len+1,char);
     wcstombs(temp, my_data_set->col_name_type_value[i].name.value, my_data_set->col_name_type_value[i].name.len);
     SET_STRING_ELT(tmp_names,i,mkChar(temp));
-    Free(temp);
+    R_Free(temp);
     INTEGER(tmp_value)[i] = (int) my_data_set->col_name_type_value[i].type;
     INTEGER(tmp_size)[i] = (int) my_data_set->col_name_type_value[i].size;
   }
@@ -2156,10 +2156,10 @@ static SEXP generic_data_set_rows_R_List(generic_data_set *data_set, int col){
   case 8:	
      PROTECT(return_value = allocVector(STRSXP, data_set->nrows));
      for (i=0; i < data_set->nrows; i++){
-       temp = Calloc(((AWSTRING *)data_set->Data[j])[i].len+1,char);
+       temp = R_Calloc(((AWSTRING *)data_set->Data[j])[i].len+1,char);
        wcstombs(temp, ((AWSTRING *)data_set->Data[j])[i].value,((AWSTRING *)data_set->Data[j])[i].len);
        SET_STRING_ELT(return_value,i,mkChar(temp));
-       Free(temp);
+       R_Free(temp);
      }
      break;
   }
@@ -2229,10 +2229,10 @@ SEXP Read_Generic_R_List(SEXP filename, SEXP reducedoutput){
     read_generic_data_group(&my_data_group,infile);
     SET_VECTOR_ELT(temp_sxp,k,data_group_R_list(&my_data_group));
              
-    temp = Calloc(my_data_group.data_group_name.len+1,char);
+    temp = R_Calloc(my_data_group.data_group_name.len+1,char);
     wcstombs(temp, my_data_group.data_group_name.value, my_data_group.data_group_name.len);
     SET_STRING_ELT(temp_names,k,mkChar(temp));  
-    Free(temp);
+    R_Free(temp);
     
     PROTECT(temp_names2 = allocVector(STRSXP,my_data_group.n_data_sets));	
     for (j=0; j < my_data_group.n_data_sets; j++){
@@ -2246,10 +2246,10 @@ SEXP Read_Generic_R_List(SEXP filename, SEXP reducedoutput){
       
       SET_VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(temp_sxp,k),1),j,temp_sxp2);
 
-      temp = Calloc(my_data_set.data_set_name.len+1,char);
+      temp = R_Calloc(my_data_set.data_set_name.len+1,char);
       wcstombs(temp, my_data_set.data_set_name.value, my_data_set.data_set_name.len);
       SET_STRING_ELT(temp_names2,j,mkChar(temp));  
-      Free(temp);	
+      R_Free(temp);	
 
       read_generic_data_set_rows(&my_data_set,infile); 
 

@@ -124,9 +124,9 @@ char *generic_get_header_info(const char *filename, int *dim1, int *dim2){
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  cdfName = Calloc(size + 1, char);
+  cdfName = R_Calloc(size + 1, char);
   wcstombs(cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -174,9 +174,9 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  header_info->cdfName = Calloc(size + 1, char);
+  header_info->cdfName = R_Calloc(size + 1, char);
   wcstombs(header_info->cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -233,11 +233,11 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-    header_info->DatHeader = Calloc(size + 1, char);
+    header_info->DatHeader = R_Calloc(size + 1, char);
     wcstombs(header_info->DatHeader, wchartemp, size);
-    Free(wchartemp);
+    R_Free(wchartemp);
   } else {
-    header_info->DatHeader = Calloc(2, char);
+    header_info->DatHeader = R_Calloc(2, char);
   }
 
  triplet =  find_nvt(&data_header,"affymetrix-scan-date");
@@ -246,11 +246,11 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-    header_info->ScanDate = Calloc(size + 1, char);
+    header_info->ScanDate = R_Calloc(size + 1, char);
     wcstombs(header_info->ScanDate, wchartemp, size);
-    Free(wchartemp);
+    R_Free(wchartemp);
   } else {
-    header_info->ScanDate = Calloc(2, char);
+    header_info->ScanDate = R_Calloc(2, char);
   }
 
 
@@ -258,9 +258,9 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  header_info->Algorithm = Calloc(size + 1, char);
+  header_info->Algorithm = R_Calloc(size + 1, char);
   wcstombs(header_info->Algorithm, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
   
 
 
@@ -268,7 +268,7 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
 
   algorithm_paramsize = 0;
   
-  header_info->AlgorithmParameters = Calloc(11, char);
+  header_info->AlgorithmParameters = R_Calloc(11, char);
   strncpy(header_info->AlgorithmParameters,"Percentile:",11);
   algorithm_paramsize+=11;
 
@@ -278,19 +278,19 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"CellMargin:",11);
   algorithm_paramsize+=11;
 
@@ -300,18 +300,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"OutlierHigh:",12);
   algorithm_paramsize+=12;
 
@@ -321,18 +321,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"OutlierLow:",11);
   algorithm_paramsize+=11;
 
@@ -342,18 +342,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"AlgVersion:",11);
   algorithm_paramsize+=11;
 
@@ -363,18 +363,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 14, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 14, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FixedCellSize:",14);
   algorithm_paramsize+=14;
 
@@ -384,18 +384,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 17, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 17, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FullFeatureWidth:",17);
   algorithm_paramsize+=17;
 
@@ -405,18 +405,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-     Free(chartemp);
+     R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FullFeatureHeight:",18);
   algorithm_paramsize+=18;
 
@@ -426,18 +426,18 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 26, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 26, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"IgnoreOutliersInShiftRows:",26);
   algorithm_paramsize+=26;
 
@@ -447,20 +447,20 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FeatureExtraction:",18);
   algorithm_paramsize+=18;
 
@@ -470,13 +470,13 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
@@ -484,7 +484,7 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
 
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"PoolWidthExtenstion:",20);
   algorithm_paramsize+=20;
 
@@ -494,19 +494,19 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"PoolHeightExtension:",20);
   algorithm_paramsize+=20;
 
@@ -516,19 +516,19 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"UseSubgrids:",12);
   algorithm_paramsize+=12;
   
@@ -537,19 +537,19 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 16, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 16, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"RandomizePixels:",16);
   algorithm_paramsize+=16;
     
@@ -558,20 +558,20 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"ErrorBasis:",11);
   algorithm_paramsize+=11;
 
@@ -581,19 +581,19 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 8, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 8, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"StdMult:",8);
   algorithm_paramsize+=8;
 
@@ -603,20 +603,20 @@ void generic_get_detailed_header_info(const char *filename, detailed_header_info
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
   header_info->AlgorithmParameters[algorithm_paramsize] ='\0';
   
 
@@ -663,9 +663,9 @@ int check_generic_cel_file(const char *filename, const char *ref_cdfName, int re
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  cdfName = Calloc(size + 1, char);
+  cdfName = R_Calloc(size + 1, char);
   wcstombs(cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -685,7 +685,7 @@ int check_generic_cel_file(const char *filename, const char *ref_cdfName, int re
     error("Cel file %s does not seem to be of %s type",filename,ref_cdfName);
   }
 
-  Free(cdfName);
+  R_Free(cdfName);
 
 
   fclose(infile);
@@ -907,8 +907,8 @@ void generic_get_masks_outliers(const char *filename, int *nmasks, short **masks
   
   *noutliers = my_data_set.nrows;
 
-  *outliers_x = Calloc(my_data_set.nrows,short); 
-  *outliers_y = Calloc(my_data_set.nrows,short);
+  *outliers_x = R_Calloc(my_data_set.nrows,short); 
+  *outliers_y = R_Calloc(my_data_set.nrows,short);
   
   read_generic_data_set_rows(&my_data_set,infile); 
   
@@ -925,8 +925,8 @@ void generic_get_masks_outliers(const char *filename, int *nmasks, short **masks
    
   *nmasks = my_data_set.nrows;
 
-  *masks_x = Calloc(my_data_set.nrows,short); 
-  *masks_y = Calloc(my_data_set.nrows,short);
+  *masks_x = R_Calloc(my_data_set.nrows,short); 
+  *masks_y = R_Calloc(my_data_set.nrows,short);
   
   
   read_generic_data_set_rows(&my_data_set,infile); 
@@ -1123,9 +1123,9 @@ char *gzgeneric_get_header_info(const char *filename, int *dim1, int *dim2){
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  cdfName = Calloc(size + 1, char);
+  cdfName = R_Calloc(size + 1, char);
   wcstombs(cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -1173,9 +1173,9 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  header_info->cdfName = Calloc(size + 1, char);
+  header_info->cdfName = R_Calloc(size + 1, char);
   wcstombs(header_info->cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -1231,11 +1231,11 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-    header_info->DatHeader = Calloc(size + 1, char);
+    header_info->DatHeader = R_Calloc(size + 1, char);
     wcstombs(header_info->DatHeader, wchartemp, size);
-    Free(wchartemp);
+    R_Free(wchartemp);
   } else {
-    header_info->DatHeader = Calloc(2, char);
+    header_info->DatHeader = R_Calloc(2, char);
   }
 
   triplet =  find_nvt(&data_header,"affymetrix-scan-date");
@@ -1244,11 +1244,11 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-    header_info->ScanDate = Calloc(size + 1, char);
+    header_info->ScanDate = R_Calloc(size + 1, char);
     wcstombs(header_info->ScanDate, wchartemp, size);
-    Free(wchartemp);
+    R_Free(wchartemp);
   } else {
-    header_info->ScanDate = Calloc(2, char);
+    header_info->ScanDate = R_Calloc(2, char);
   }
 
 
@@ -1256,9 +1256,9 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  header_info->Algorithm = Calloc(size + 1, char);
+  header_info->Algorithm = R_Calloc(size + 1, char);
   wcstombs(header_info->Algorithm, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
   
 
 
@@ -1266,7 +1266,7 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
 
   algorithm_paramsize = 0;
   
-  header_info->AlgorithmParameters = Calloc(11, char);
+  header_info->AlgorithmParameters = R_Calloc(11, char);
   strncpy(header_info->AlgorithmParameters,"Percentile:",11);
   algorithm_paramsize+=11;
 
@@ -1276,19 +1276,19 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"CellMargin:",11);
   algorithm_paramsize+=11;
 
@@ -1298,18 +1298,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"OutlierHigh:",12);
   algorithm_paramsize+=12;
 
@@ -1319,18 +1319,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"OutlierLow:",11);
   algorithm_paramsize+=11;
 
@@ -1340,18 +1340,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"AlgVersion:",11);
   algorithm_paramsize+=11;
 
@@ -1361,18 +1361,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 14, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 14, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FixedCellSize:",14);
   algorithm_paramsize+=14;
 
@@ -1382,18 +1382,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 17, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 17, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FullFeatureWidth:",17);
   algorithm_paramsize+=17;
 
@@ -1403,18 +1403,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-     Free(chartemp);
+     R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FullFeatureHeight:",18);
   algorithm_paramsize+=18;
 
@@ -1424,18 +1424,18 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 26, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 26, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"IgnoreOutliersInShiftRows:",26);
   algorithm_paramsize+=26;
 
@@ -1445,20 +1445,20 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 18, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"FeatureExtraction:",18);
   algorithm_paramsize+=18;
 
@@ -1468,13 +1468,13 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
@@ -1482,7 +1482,7 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
 
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"PoolWidthExtenstion:",20);
   algorithm_paramsize+=20;
 
@@ -1492,19 +1492,19 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 20, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"PoolHeightExtension:",20);
   algorithm_paramsize+=20;
 
@@ -1514,19 +1514,19 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 12, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"UseSubgrids:",12);
   algorithm_paramsize+=12;
   
@@ -1535,19 +1535,19 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 16, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 16, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"RandomizePixels:",16);
   algorithm_paramsize+=16;
     
@@ -1556,20 +1556,20 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
 
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 11, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"ErrorBasis:",11);
   algorithm_paramsize+=11;
 
@@ -1579,19 +1579,19 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 8, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 8, char);
   strncpy(&header_info->AlgorithmParameters[algorithm_paramsize],"StdMult:",8);
   algorithm_paramsize+=8;
 
@@ -1601,20 +1601,20 @@ void gzgeneric_get_detailed_header_info(const char *filename, detailed_header_in
     cur_mime_type = determine_MIMETYPE(*triplet);
     
     chartemp = decode_MIME_value_toASCII(*triplet,cur_mime_type, chartemp, &size);
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + size +1, char);
     strncpy(&header_info->AlgorithmParameters[algorithm_paramsize], chartemp, size);
     algorithm_paramsize+= size +1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
-    Free(chartemp);
+    R_Free(chartemp);
   } else {
-    header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+    header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
     algorithm_paramsize+= 1;
     header_info->AlgorithmParameters[algorithm_paramsize-1]=';';
   }
 
 
   
-  header_info->AlgorithmParameters = Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
+  header_info->AlgorithmParameters = R_Realloc(header_info->AlgorithmParameters, algorithm_paramsize + 1, char);
   header_info->AlgorithmParameters[algorithm_paramsize] ='\0';
 
   Free_generic_data_header(&data_header);
@@ -1661,9 +1661,9 @@ int check_gzgeneric_cel_file(const char *filename, const char *ref_cdfName, int 
   cur_mime_type = determine_MIMETYPE(*triplet);
 
   wchartemp = decode_MIME_value(*triplet,cur_mime_type, wchartemp, &size);
-  cdfName = Calloc(size + 1, char);
+  cdfName = R_Calloc(size + 1, char);
   wcstombs(cdfName, wchartemp, size);
-  Free(wchartemp);
+  R_Free(wchartemp);
 
   triplet =  find_nvt(&data_header,"affymetrix-cel-cols");
   cur_mime_type = determine_MIMETYPE(*triplet);
@@ -1683,7 +1683,7 @@ int check_gzgeneric_cel_file(const char *filename, const char *ref_cdfName, int 
     error("Cel file %s does not seem to be of %s type",filename,ref_cdfName);
   }
 
-  Free(cdfName);
+  R_Free(cdfName);
 
 
   gzclose(infile);
@@ -1902,8 +1902,8 @@ void gzgeneric_get_masks_outliers(const char *filename, int *nmasks, short **mas
   
   *noutliers = my_data_set.nrows;
 
-  *outliers_x = Calloc(my_data_set.nrows,short); 
-  *outliers_y = Calloc(my_data_set.nrows,short);
+  *outliers_x = R_Calloc(my_data_set.nrows,short); 
+  *outliers_y = R_Calloc(my_data_set.nrows,short);
   
   gzread_generic_data_set_rows(&my_data_set,infile); 
   
@@ -1920,8 +1920,8 @@ void gzgeneric_get_masks_outliers(const char *filename, int *nmasks, short **mas
    
   *nmasks = my_data_set.nrows;
 
-  *masks_x = Calloc(my_data_set.nrows,short); 
-  *masks_y = Calloc(my_data_set.nrows,short);
+  *masks_x = R_Calloc(my_data_set.nrows,short); 
+  *masks_y = R_Calloc(my_data_set.nrows,short);
   
   
   gzread_generic_data_set_rows(&my_data_set,infile); 

@@ -306,7 +306,7 @@ static tokenset *tokenize(char *str, char *delimiters){
   int i=0;
 
   char *current_token;
-  tokenset *my_tokenset = Calloc(1,tokenset);
+  tokenset *my_tokenset = R_Calloc(1,tokenset);
   my_tokenset->n=0;
   
   my_tokenset->tokens = NULL;
@@ -317,8 +317,8 @@ static tokenset *tokenize(char *str, char *delimiters){
 #endif
   while (current_token != NULL){
     my_tokenset->n++;
-    my_tokenset->tokens = Realloc(my_tokenset->tokens,my_tokenset->n,char*);
-    my_tokenset->tokens[i] = Calloc(strlen(current_token)+1,char);
+    my_tokenset->tokens = R_Realloc(my_tokenset->tokens,my_tokenset->n,char*);
+    my_tokenset->tokens[i] = R_Calloc(strlen(current_token)+1,char);
     strcpy(my_tokenset->tokens[i],current_token);
     my_tokenset->tokens[i][(strlen(current_token))] = '\0';
     i++;
@@ -377,10 +377,10 @@ static void delete_tokens(tokenset *x){
   int i;
 
   for (i=0; i < x->n; i++){
-    Free(x->tokens[i]);
+    R_Free(x->tokens[i]);
   }
-  Free(x->tokens);
-  Free(x);
+  R_Free(x->tokens);
+  R_Free(x);
 }
 
 /*******************************************************************
@@ -1073,8 +1073,8 @@ static void get_masks_outliers(const char *filename, int *nmasks, short **masks_
   
   *nmasks = numcells;
 
-  *masks_x = Calloc(numcells,short);
-  *masks_y = Calloc(numcells,short);
+  *masks_x = R_Calloc(numcells,short);
+  *masks_y = R_Calloc(numcells,short);
 
 
   for (i =0; i < numcells; i++){
@@ -1101,8 +1101,8 @@ static void get_masks_outliers(const char *filename, int *nmasks, short **masks_
   findStartsWith(currentFile,"CellHeader=",buffer); 
 
   *noutliers = numcells;
-  *outliers_x = Calloc(numcells,short);
-  *outliers_y = Calloc(numcells,short);
+  *outliers_x = R_Calloc(numcells,short);
+  *outliers_y = R_Calloc(numcells,short);
 
 
   for (i = 0; i < numcells; i++){
@@ -1169,7 +1169,7 @@ static char *get_header_info(const char *filename, int *dim1, int *dim2){
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */
       
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(cur_tokenset,i),endpos);
       cdfName[endpos] = '\0';
       
@@ -1247,12 +1247,12 @@ static void get_detailed_header_info(const char *filename, detailed_header_info 
   findStartsWith(currentFile,"DatHeader",buffer);
   /* first lets copy the entire string over */
 
-  buffercopy =  Calloc(strlen(buffer)+1,char);
+  buffercopy =  R_Calloc(strlen(buffer)+1,char);
   strcpy(buffercopy,buffer);
   cur_tokenset = tokenize(buffercopy,"\r\n");
-  header_info->DatHeader = Calloc(strlen(get_token(cur_tokenset,0))-8,char);
+  header_info->DatHeader = R_Calloc(strlen(get_token(cur_tokenset,0))-8,char);
   strcpy(header_info->DatHeader,(get_token(cur_tokenset,0)+10));  /* the +10 is to avoid the starting "DatHeader=" */
-  Free(buffercopy);
+  R_Free(buffercopy);
   delete_tokens(cur_tokenset);
 
   
@@ -1264,7 +1264,7 @@ static void get_detailed_header_info(const char *filename, detailed_header_info 
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */
       
-      header_info->cdfName= Calloc(endpos+1,char);
+      header_info->cdfName= R_Calloc(endpos+1,char);
       strncpy( header_info->cdfName,get_token(cur_tokenset,i),endpos);
        header_info->cdfName[endpos] = '\0';
       
@@ -1278,7 +1278,7 @@ static void get_detailed_header_info(const char *filename, detailed_header_info 
   
   findStartsWith(currentFile,"Algorithm",buffer);
   cur_tokenset = tokenize(buffer,"=\r\n");
-  header_info->Algorithm = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+  header_info->Algorithm = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
   strcpy(header_info->Algorithm,get_token(cur_tokenset,1));
   
 
@@ -1286,12 +1286,12 @@ static void get_detailed_header_info(const char *filename, detailed_header_info 
 
   findStartsWith(currentFile,"AlgorithmParameters",buffer);
   cur_tokenset = tokenize(buffer,"=\r\n");
-  header_info->AlgorithmParameters = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+  header_info->AlgorithmParameters = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
   strcpy(header_info->AlgorithmParameters,get_token(cur_tokenset,1));
   
   fclose(currentFile);
 
-  header_info->ScanDate = Calloc(2, char);
+  header_info->ScanDate = R_Calloc(2, char);
 }
 
 
@@ -1958,7 +1958,7 @@ static char *gz_get_header_info(const char *filename, int *dim1, int *dim2){
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */
       
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(cur_tokenset,i),endpos);
       cdfName[endpos] = '\0';
 
@@ -2038,12 +2038,12 @@ static void gz_get_detailed_header_info(const char *filename, detailed_header_in
   gzfindStartsWith(currentFile,"DatHeader",buffer);
   /* first lets copy the entire string over */
 
-  buffercopy =  Calloc(strlen(buffer)+1,char);
+  buffercopy =  R_Calloc(strlen(buffer)+1,char);
   strcpy(buffercopy,buffer);
   cur_tokenset = tokenize(buffercopy,"\r\n");
-  header_info->DatHeader = Calloc(strlen(get_token(cur_tokenset,0))-8,char);
+  header_info->DatHeader = R_Calloc(strlen(get_token(cur_tokenset,0))-8,char);
   strcpy(header_info->DatHeader,(get_token(cur_tokenset,0)+10));  /* the +10 is to avoid the starting "DatHeader=" */
-  Free(buffercopy);
+  R_Free(buffercopy);
   delete_tokens(cur_tokenset);
 
   
@@ -2055,7 +2055,7 @@ static void gz_get_detailed_header_info(const char *filename, detailed_header_in
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */
       
-      header_info->cdfName= Calloc(endpos+1,char);
+      header_info->cdfName= R_Calloc(endpos+1,char);
       strncpy( header_info->cdfName,get_token(cur_tokenset,i),endpos);
        header_info->cdfName[endpos] = '\0';
       
@@ -2069,7 +2069,7 @@ static void gz_get_detailed_header_info(const char *filename, detailed_header_in
   
   gzfindStartsWith(currentFile,"Algorithm",buffer);
   cur_tokenset = tokenize(buffer,"=\r\n");
-  header_info->Algorithm = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+  header_info->Algorithm = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
   strcpy(header_info->Algorithm,get_token(cur_tokenset,1));
   
 
@@ -2077,12 +2077,12 @@ static void gz_get_detailed_header_info(const char *filename, detailed_header_in
 
   gzfindStartsWith(currentFile,"AlgorithmParameters",buffer);
   cur_tokenset = tokenize(buffer,"=\r\n");
-  header_info->AlgorithmParameters = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+  header_info->AlgorithmParameters = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
   strcpy(header_info->AlgorithmParameters,get_token(cur_tokenset,1));
   
   gzclose(currentFile);
  
-  header_info->ScanDate = Calloc(2, char);
+  header_info->ScanDate = R_Calloc(2, char);
 }
 
 
@@ -2121,8 +2121,8 @@ static void gz_get_masks_outliers(const char *filename, int *nmasks, short **mas
   
   *nmasks = numcells;
 
-  *masks_x = Calloc(numcells,short);
-  *masks_y = Calloc(numcells,short);
+  *masks_x = R_Calloc(numcells,short);
+  *masks_y = R_Calloc(numcells,short);
 
 
   for (i =0; i < numcells; i++){
@@ -2149,8 +2149,8 @@ static void gz_get_masks_outliers(const char *filename, int *nmasks, short **mas
   gzfindStartsWith(currentFile,"CellHeader=",buffer); 
 
   *noutliers = numcells;
-  *outliers_x = Calloc(numcells,short);
-  *outliers_y = Calloc(numcells,short);
+  *outliers_x = R_Calloc(numcells,short);
+  *outliers_y = R_Calloc(numcells,short);
 
 
   for (i = 0; i < numcells; i++){
@@ -2420,10 +2420,10 @@ static int isBinaryCelFile(const char *filename){
 
 static void delete_binary_header(binary_header *my_header){
 
-  Free(my_header->header);
-  Free(my_header->algorithm);
-  Free(my_header->alg_param);
-  Free(my_header);
+  R_Free(my_header->header);
+  R_Free(my_header->algorithm);
+  R_Free(my_header->alg_param);
+  R_Free(my_header);
 }
 
 
@@ -2441,7 +2441,7 @@ static binary_header *read_binary_header(const char *filename, int return_stream
   
   FILE *infile;
 
-  binary_header *this_header = Calloc(1,binary_header);
+  binary_header *this_header = R_Calloc(1,binary_header);
   
   /* Pass through all the header information */
   
@@ -2504,7 +2504,7 @@ static binary_header *read_binary_header(const char *filename, int return_stream
     error("Binary file corrupted? Could not read any further\n");
   }
 
-  this_header->header = Calloc(this_header->header_len+1,char);
+  this_header->header = R_Calloc(this_header->header_len+1,char);
   
   if (!fread(this_header->header,sizeof(char),this_header->header_len,infile)){
     error("binary file corrupted? Could not read any further.\n");
@@ -2514,7 +2514,7 @@ static binary_header *read_binary_header(const char *filename, int return_stream
     error("Binary file corrupted? Could not read any further\n");
   }
   
-  this_header->algorithm = Calloc(this_header->alg_len+1,char);
+  this_header->algorithm = R_Calloc(this_header->alg_len+1,char);
   
   if (!fread_char(this_header->algorithm,this_header->alg_len,infile)){
     error("binary file corrupted? Could not read any further.\n");
@@ -2524,7 +2524,7 @@ static binary_header *read_binary_header(const char *filename, int return_stream
     error("Binary file corrupted? Could not read any further\n");
   }
   
-  this_header->alg_param = Calloc(this_header->alg_param_len+1,char);
+  this_header->alg_param = R_Calloc(this_header->alg_param_len+1,char);
   
   if (!fread_char(this_header->alg_param,this_header->alg_param_len,infile)){
     error("binary file corrupted? Could not read any further.\n");
@@ -2593,7 +2593,7 @@ static char *binary_get_header_info(const char *filename, int *dim1, int *dim2){
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(my_tokenset,i),endpos);
       cdfName[endpos] = '\0';
       
@@ -2653,18 +2653,18 @@ static void binary_get_detailed_header_info(const char *filename, detailed_heade
   header_info->rows = my_header->rows;
 
 
-  header_info->Algorithm = Calloc(strlen(my_header->algorithm)+1,char);
+  header_info->Algorithm = R_Calloc(strlen(my_header->algorithm)+1,char);
   
   strcpy(header_info->Algorithm,my_header->algorithm);
 
-  header_info->AlgorithmParameters = Calloc(strlen(my_header->alg_param)+1,char);
+  header_info->AlgorithmParameters = R_Calloc(strlen(my_header->alg_param)+1,char);
   strncpy(header_info->AlgorithmParameters,my_header->alg_param,strlen(my_header->alg_param)-1);
   
 
   /* Rprintf("%s\n\n\n",my_header->header); */
 
 
-  header_copy = Calloc(strlen(my_header->header) +1,char);
+  header_copy = R_Calloc(strlen(my_header->header) +1,char);
   strcpy(header_copy,my_header->header);
   my_tokenset = tokenize(header_copy,"\n");
 
@@ -2674,47 +2674,47 @@ static void binary_get_detailed_header_info(const char *filename, detailed_heade
   for (i =0; i < tokenset_size(my_tokenset);i++){
     /* Rprintf("%d: %s\n",i,get_token(my_tokenset,i)); */
     if (strncmp("GridCornerUL",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerULx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerULy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerUR",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerURx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerURy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerLR",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerLRx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerLRy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerLL",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerLLx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerLLy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("DatHeader",get_token(my_tokenset,i),9) == 0){
-      header_info->DatHeader = Calloc(strlen(get_token(my_tokenset,i))+1, char);
+      header_info->DatHeader = R_Calloc(strlen(get_token(my_tokenset,i))+1, char);
       strcpy(header_info->DatHeader,(get_token(my_tokenset,i)+10));
     }
   }
@@ -2723,9 +2723,9 @@ static void binary_get_detailed_header_info(const char *filename, detailed_heade
   delete_tokens(my_tokenset);
 
 
-  Free(header_copy);
+  R_Free(header_copy);
 
-  header_copy = Calloc(my_header->header_len +1,char);
+  header_copy = R_Calloc(my_header->header_len +1,char);
   strcpy(header_copy,my_header->header);
   my_tokenset = tokenize(header_copy," ");
     
@@ -2734,7 +2734,7 @@ static void binary_get_detailed_header_info(const char *filename, detailed_heade
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      header_info->cdfName= Calloc(endpos+1,char);
+      header_info->cdfName= R_Calloc(endpos+1,char);
       strncpy(header_info->cdfName,get_token(my_tokenset,i),endpos);
       header_info->cdfName[endpos] = '\0';
       
@@ -2745,11 +2745,11 @@ static void binary_get_detailed_header_info(const char *filename, detailed_heade
     }
   }
    
-  header_info->ScanDate = Calloc(2, char);
+  header_info->ScanDate = R_Calloc(2, char);
 
   delete_tokens(my_tokenset);
   delete_binary_header(my_header);
-  Free(header_copy);
+  R_Free(header_copy);
 
 
 }
@@ -2804,7 +2804,7 @@ static int check_binary_cel_file(const char *filename, const char *ref_cdfName, 
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(my_tokenset,i),endpos);
       cdfName[endpos] = '\0';
       
@@ -2822,7 +2822,7 @@ static int check_binary_cel_file(const char *filename, const char *ref_cdfName, 
   
   delete_binary_header(my_header);
   delete_tokens(my_tokenset);
-  Free(cdfName);
+  R_Free(cdfName);
 
 
 
@@ -2848,7 +2848,7 @@ static int read_binarycel_file_intensities(const char *filename, double *intensi
   int fread_err=0;
 
 
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = read_binary_header(filename,1);
@@ -2862,13 +2862,13 @@ static int read_binarycel_file_intensities(const char *filename, double *intensi
       if (fread_err < 3){
 	fclose(my_header->infile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       if (cur_intensity->cur_intens < 0 || cur_intensity->cur_intens > 65536 || isnan(cur_intensity->cur_intens)){
 	fclose(my_header->infile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -2878,7 +2878,7 @@ static int read_binarycel_file_intensities(const char *filename, double *intensi
   
   fclose(my_header->infile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -2901,7 +2901,7 @@ static int read_binarycel_file_stddev(const char *filename, double *intensity, s
 
   int fread_err=0;
   
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = read_binary_header(filename,1);
@@ -2915,7 +2915,7 @@ static int read_binarycel_file_stddev(const char *filename, double *intensity, s
       if (fread_err < 3){
 	fclose(my_header->infile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -2925,7 +2925,7 @@ static int read_binarycel_file_stddev(const char *filename, double *intensity, s
   
   fclose(my_header->infile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -2948,7 +2948,7 @@ static int read_binarycel_file_npixels(const char *filename, double *intensity, 
 
   int fread_err=0;
  
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = read_binary_header(filename,1);
@@ -2962,7 +2962,7 @@ static int read_binarycel_file_npixels(const char *filename, double *intensity, 
       if (fread_err < 3){
 	fclose(my_header->infile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -2972,7 +2972,7 @@ static int read_binarycel_file_npixels(const char *filename, double *intensity, 
   
   fclose(my_header->infile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -3007,7 +3007,7 @@ static void binary_apply_masks(const char *filename, double *intensity, size_t c
 
   int sizeofrecords;
 
-  outliermask_loc *cur_loc= Calloc(1,outliermask_loc);
+  outliermask_loc *cur_loc= R_Calloc(1,outliermask_loc);
   binary_header *my_header;
 
   my_header = read_binary_header(filename,1);
@@ -3047,7 +3047,7 @@ static void binary_apply_masks(const char *filename, double *intensity, size_t c
   fclose(my_header->infile);
   delete_binary_header(my_header);
  
-  Free(cur_loc);
+  R_Free(cur_loc);
 
 }
 
@@ -3069,7 +3069,7 @@ static void binary_get_masks_outliers(const char *filename, int *nmasks, short *
 
   int sizeofrecords;
 
-  outliermask_loc *cur_loc= Calloc(1,outliermask_loc);
+  outliermask_loc *cur_loc= R_Calloc(1,outliermask_loc);
   binary_header *my_header;
 
   my_header = read_binary_header(filename,1);
@@ -3080,8 +3080,8 @@ static void binary_get_masks_outliers(const char *filename, int *nmasks, short *
  
 
   *nmasks = my_header->n_masks;
-  *masks_x = Calloc(my_header->n_masks,short);
-  *masks_y = Calloc(my_header->n_masks,short);
+  *masks_x = R_Calloc(my_header->n_masks,short);
+  *masks_y = R_Calloc(my_header->n_masks,short);
 
   for (i =0; i < my_header->n_masks; i++){
     fread_int16(&(cur_loc->x),1,my_header->infile);
@@ -3092,8 +3092,8 @@ static void binary_get_masks_outliers(const char *filename, int *nmasks, short *
 
 
   *noutliers = my_header->n_outliers;
-  *outliers_x = Calloc(my_header->n_outliers,short);
-  *outliers_y = Calloc(my_header->n_outliers,short);
+  *outliers_x = R_Calloc(my_header->n_outliers,short);
+  *outliers_y = R_Calloc(my_header->n_outliers,short);
   
 
 
@@ -3109,7 +3109,7 @@ static void binary_get_masks_outliers(const char *filename, int *nmasks, short *
   fclose(my_header->infile);
   delete_binary_header(my_header);
  
-  Free(cur_loc);
+  R_Free(cur_loc);
   
 
 }
@@ -3196,7 +3196,7 @@ static binary_header *gzread_binary_header(const char *filename, int return_stre
   
   gzFile infile;
 
-  binary_header *this_header = Calloc(1,binary_header);
+  binary_header *this_header = R_Calloc(1,binary_header);
   
   /* Pass through all the header information */
   
@@ -3253,7 +3253,7 @@ static binary_header *gzread_binary_header(const char *filename, int return_stre
     error("Binary file corrupted? Could not read any further\n");
   }
 
-  this_header->header = Calloc(this_header->header_len+1,char);
+  this_header->header = R_Calloc(this_header->header_len+1,char);
   
   if (!gzread(infile,this_header->header,sizeof(char)*this_header->header_len)){
     error("binary file corrupted? Could not read any further.\n");
@@ -3263,7 +3263,7 @@ static binary_header *gzread_binary_header(const char *filename, int return_stre
     error("Binary file corrupted? Could not read any further\n");
   }
   
-  this_header->algorithm = Calloc(this_header->alg_len+1,char);
+  this_header->algorithm = R_Calloc(this_header->alg_len+1,char);
   
   if (!gzread_char(this_header->algorithm,this_header->alg_len,infile)){
     error("binary file corrupted? Could not read any further.\n");
@@ -3273,7 +3273,7 @@ static binary_header *gzread_binary_header(const char *filename, int return_stre
     error("Binary file corrupted? Could not read any further\n");
   }
   
-  this_header->alg_param = Calloc(this_header->alg_param_len+1,char);
+  this_header->alg_param = R_Calloc(this_header->alg_param_len+1,char);
   
   if (!gzread_char(this_header->alg_param,this_header->alg_param_len,infile)){
     error("binary file corrupted? Could not read any further.\n");
@@ -3344,7 +3344,7 @@ static char *gzbinary_get_header_info(const char *filename, int *dim1, int *dim2
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(my_tokenset,i),endpos);
       cdfName[endpos] = '\0';
       
@@ -3402,18 +3402,18 @@ static void gzbinary_get_detailed_header_info(const char *filename, detailed_hea
   header_info->rows = my_header->rows;
 
 
-  header_info->Algorithm = Calloc(strlen(my_header->algorithm)+1,char);
+  header_info->Algorithm = R_Calloc(strlen(my_header->algorithm)+1,char);
   
   strcpy(header_info->Algorithm,my_header->algorithm);
 
-  header_info->AlgorithmParameters = Calloc(strlen(my_header->alg_param)+1,char);
+  header_info->AlgorithmParameters = R_Calloc(strlen(my_header->alg_param)+1,char);
   strncpy(header_info->AlgorithmParameters,my_header->alg_param,strlen(my_header->alg_param)-1);
   
 
   /* Rprintf("%s\n\n\n",my_header->header); */
 
 
-  header_copy = Calloc(strlen(my_header->header) +1,char);
+  header_copy = R_Calloc(strlen(my_header->header) +1,char);
   strcpy(header_copy,my_header->header);
   my_tokenset = tokenize(header_copy,"\n");
 
@@ -3423,47 +3423,47 @@ static void gzbinary_get_detailed_header_info(const char *filename, detailed_hea
   for (i =0; i < tokenset_size(my_tokenset);i++){
     /* Rprintf("%d: %s\n",i,get_token(my_tokenset,i)); */
     if (strncmp("GridCornerUL",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerULx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerULy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerUR",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerURx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerURy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerLR",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerLRx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerLRy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("GridCornerLL",get_token(my_tokenset,i),12) == 0){
-      tmpbuffer = Calloc(strlen(get_token(my_tokenset,i))+1,char);
+      tmpbuffer = R_Calloc(strlen(get_token(my_tokenset,i))+1,char);
       strcpy(tmpbuffer,get_token(my_tokenset,i));
 
       temp_tokenset = tokenize(tmpbuffer,"= ");
       header_info->GridCornerLLx  = atoi(get_token(temp_tokenset,1));
       header_info->GridCornerLLy  = atoi(get_token(temp_tokenset,2));
       delete_tokens(temp_tokenset);
-      Free(tmpbuffer);
+      R_Free(tmpbuffer);
     }
     if (strncmp("DatHeader",get_token(my_tokenset,i),9) == 0){
-      header_info->DatHeader = Calloc(strlen(get_token(my_tokenset,i))+1, char);
+      header_info->DatHeader = R_Calloc(strlen(get_token(my_tokenset,i))+1, char);
       strcpy(header_info->DatHeader,(get_token(my_tokenset,i)+10));
     }
   }
@@ -3472,9 +3472,9 @@ static void gzbinary_get_detailed_header_info(const char *filename, detailed_hea
   delete_tokens(my_tokenset);
 
 
-  Free(header_copy);
+  R_Free(header_copy);
 
-  header_copy = Calloc(my_header->header_len +1,char);
+  header_copy = R_Calloc(my_header->header_len +1,char);
   strcpy(header_copy,my_header->header);
   my_tokenset = tokenize(header_copy," ");
     
@@ -3483,7 +3483,7 @@ static void gzbinary_get_detailed_header_info(const char *filename, detailed_hea
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      header_info->cdfName= Calloc(endpos+1,char);
+      header_info->cdfName= R_Calloc(endpos+1,char);
       strncpy(header_info->cdfName,get_token(my_tokenset,i),endpos);
       header_info->cdfName[endpos] = '\0';
       
@@ -3495,11 +3495,11 @@ static void gzbinary_get_detailed_header_info(const char *filename, detailed_hea
   }
   
 
-  header_info->ScanDate = Calloc(2, char);
+  header_info->ScanDate = R_Calloc(2, char);
 
   delete_tokens(my_tokenset);
   delete_binary_header(my_header);
-  Free(header_copy);
+  R_Free(header_copy);
 
 
 }
@@ -3543,7 +3543,7 @@ static int check_gzbinary_cel_file(const char *filename, const char *ref_cdfName
     endpos=token_ends_with(get_token(my_tokenset,i),".1sq");
     if(endpos > 0){
       /* Found the likely CDF name, now chop of .1sq and store it */      
-      cdfName= Calloc(endpos+1,char);
+      cdfName= R_Calloc(endpos+1,char);
       strncpy(cdfName,get_token(my_tokenset,i),endpos);
       cdfName[endpos] = '\0';
       
@@ -3561,7 +3561,7 @@ static int check_gzbinary_cel_file(const char *filename, const char *ref_cdfName
   
   delete_binary_header(my_header);
   delete_tokens(my_tokenset);
-  Free(cdfName);
+  R_Free(cdfName);
 
 
 
@@ -3587,7 +3587,7 @@ static int gzread_binarycel_file_intensities(const char *filename, double *inten
   int fread_err=0;
 
 
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = gzread_binary_header(filename,1);
@@ -3601,13 +3601,13 @@ static int gzread_binarycel_file_intensities(const char *filename, double *inten
       if (fread_err < 3){
 	gzclose(my_header->gzinfile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }     
       if (cur_intensity->cur_intens < 0 || cur_intensity->cur_intens > 65536 || isnan(cur_intensity->cur_intens)){
 	gzclose(my_header->gzinfile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -3617,7 +3617,7 @@ static int gzread_binarycel_file_intensities(const char *filename, double *inten
   
   gzclose(my_header->gzinfile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -3640,7 +3640,7 @@ static int gzread_binarycel_file_stddev(const char *filename, double *intensity,
 
   int fread_err=0;
   
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = gzread_binary_header(filename,1);
@@ -3654,7 +3654,7 @@ static int gzread_binarycel_file_stddev(const char *filename, double *intensity,
       if (fread_err < 3){
 	gzclose(my_header->gzinfile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -3664,7 +3664,7 @@ static int gzread_binarycel_file_stddev(const char *filename, double *intensity,
   
   gzclose(my_header->gzinfile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -3688,7 +3688,7 @@ static int gzread_binarycel_file_npixels(const char *filename, double *intensity
 
   int fread_err=0;
  
-  celintens_record *cur_intensity = Calloc(1,celintens_record);
+  celintens_record *cur_intensity = R_Calloc(1,celintens_record);
   binary_header *my_header;
 
   my_header = gzread_binary_header(filename,1);
@@ -3702,7 +3702,7 @@ static int gzread_binarycel_file_npixels(const char *filename, double *intensity
       if (fread_err < 3){
 	gzclose(my_header->gzinfile);
 	delete_binary_header(my_header);
-	Free(cur_intensity);
+	R_Free(cur_intensity);
 	return 1;
       }
       fread_err=0;
@@ -3712,7 +3712,7 @@ static int gzread_binarycel_file_npixels(const char *filename, double *intensity
   
   gzclose(my_header->gzinfile);
   delete_binary_header(my_header);
-  Free(cur_intensity);
+  R_Free(cur_intensity);
   return(0);
 }
 
@@ -3735,7 +3735,7 @@ static void gz_binary_apply_masks(const char *filename, double *intensity, size_
 
   int sizeofrecords;
 
-  outliermask_loc *cur_loc= Calloc(1,outliermask_loc);
+  outliermask_loc *cur_loc= R_Calloc(1,outliermask_loc);
   binary_header *my_header;
 
   my_header = gzread_binary_header(filename,1);
@@ -3775,7 +3775,7 @@ static void gz_binary_apply_masks(const char *filename, double *intensity, size_
   gzclose(my_header->gzinfile);
   delete_binary_header(my_header);
  
-  Free(cur_loc);
+  R_Free(cur_loc);
 
 }
 
@@ -3798,7 +3798,7 @@ static void gzbinary_get_masks_outliers(const char *filename, int *nmasks, short
 
   int sizeofrecords;
 
-  outliermask_loc *cur_loc= Calloc(1,outliermask_loc);
+  outliermask_loc *cur_loc= R_Calloc(1,outliermask_loc);
   binary_header *my_header;
 
   my_header = gzread_binary_header(filename,1);
@@ -3809,8 +3809,8 @@ static void gzbinary_get_masks_outliers(const char *filename, int *nmasks, short
  
 
   *nmasks = my_header->n_masks;
-  *masks_x = Calloc(my_header->n_masks,short);
-  *masks_y = Calloc(my_header->n_masks,short);
+  *masks_x = R_Calloc(my_header->n_masks,short);
+  *masks_y = R_Calloc(my_header->n_masks,short);
 
   for (i =0; i < my_header->n_masks; i++){
     gzread_int16(&(cur_loc->x),1,my_header->gzinfile);
@@ -3821,8 +3821,8 @@ static void gzbinary_get_masks_outliers(const char *filename, int *nmasks, short
 
 
   *noutliers = my_header->n_outliers;
-  *outliers_x = Calloc(my_header->n_outliers,short);
-  *outliers_y = Calloc(my_header->n_outliers,short);
+  *outliers_x = R_Calloc(my_header->n_outliers,short);
+  *outliers_y = R_Calloc(my_header->n_outliers,short);
   
 
 
@@ -3838,7 +3838,7 @@ static void gzbinary_get_masks_outliers(const char *filename, int *nmasks, short
   gzclose(my_header->gzinfile);
   delete_binary_header(my_header);
  
-  Free(cur_loc);
+  R_Free(cur_loc);
   
 
 }
@@ -4137,7 +4137,7 @@ SEXP ReadHeader(SEXP filename){
   SET_VECTOR_ELT(headInfo,0,name);
   SET_VECTOR_ELT(headInfo,1,cel_dimensions);
   
-  Free(cdfName);
+  R_Free(cdfName);
   UNPROTECT(3);
 
   return headInfo;
@@ -4257,10 +4257,10 @@ SEXP ReadHeaderDetailed(SEXP filename){
   SET_VECTOR_ELT(HEADER,9,tmp_sexp);
   UNPROTECT(1);
   
-  Free(header_info.Algorithm);
-  Free(header_info.AlgorithmParameters);
-  Free(header_info.DatHeader);
-  Free(header_info.cdfName);
+  R_Free(header_info.Algorithm);
+  R_Free(header_info.AlgorithmParameters);
+  R_Free(header_info.DatHeader);
+  R_Free(header_info.cdfName);
 
   UNPROTECT(1);
   return HEADER;
@@ -4379,13 +4379,13 @@ void *readfile_group(void *data){
    struct thread_data *args = (struct thread_data *) data;
    
 
-   args->CurintensityMatrix = Calloc(args->ref_dim_1*args->ref_dim_2, double);
+   args->CurintensityMatrix = R_Calloc(args->ref_dim_1*args->ref_dim_2, double);
 
    for(num = args->i; num < args->i+args->chunk_size; num++){
      readfile(args->filenames, args->CurintensityMatrix, args->pmMatrix, args->mmMatrix, num,
               args->ref_dim_1, args->ref_dim_2, args->n_files, args->num_probes, args->cdfInfo, args->which_flag, args->verbose);
    }
-   Free(args->CurintensityMatrix);
+   R_Free(args->CurintensityMatrix);
    return NULL;
 }
 
@@ -4527,7 +4527,7 @@ SEXP read_probeintensities(SEXP filenames,  SEXP rm_mask, SEXP rm_outliers, SEXP
       error("The number of threads (enviroment variable %s) must be a positive integer, but the specified value was %s", THREADS_ENV_VAR, nthreads);
     }
   }
-  threads = (pthread_t *) Calloc(num_threads, pthread_t);
+  threads = (pthread_t *) R_Calloc(num_threads, pthread_t);
 
   /* Initialize and set thread detached attribute */
   pthread_attr_init(&attr);
@@ -4552,18 +4552,18 @@ SEXP read_probeintensities(SEXP filenames,  SEXP rm_mask, SEXP rm_outliers, SEXP
   }
 
   n_probesets = GET_LENGTH(cdfInfo);
-  n_probes = (int *) Calloc(n_probesets, int);
-  cur_indexes = (double **) Calloc(n_probesets, double *);
+  n_probes = (int *) R_Calloc(n_probesets, int);
+  cur_indexes = (double **) R_Calloc(n_probesets, double *);
 
   /* Create the data structures required for each thread to independently
      run the checkFileCDF and readfile functions */
   for(i=0; i < n_probesets; i++){
     curIndices = VECTOR_ELT(cdfInfo,i);
     n_probes[i] = INTEGER(getAttrib(curIndices,R_DimSymbol))[0];
-    cur_indexes[i] = (double *) Calloc(n_probes[i]*2, double);
+    cur_indexes[i] = (double *) R_Calloc(n_probes[i]*2, double);
     memcpy(cur_indexes[i], NUMERIC_POINTER(AS_NUMERIC(curIndices)), sizeof(double)*n_probes[i]*2);
   }
-  args = (struct thread_data *) Calloc((n_files < num_threads ? n_files : num_threads), struct thread_data);
+  args = (struct thread_data *) R_Calloc((n_files < num_threads ? n_files : num_threads), struct thread_data);
 
   args[0].filenames = filenames;
   args[0].pmMatrix = pmMatrix;
@@ -4632,7 +4632,7 @@ SEXP read_probeintensities(SEXP filenames,  SEXP rm_mask, SEXP rm_outliers, SEXP
          error("ERROR; return code from pthread_create() is %d\n", returnCode);
      }
   }
-  /* Free attribute and wait for the other threads */
+  /* R_Free attribute and wait for the other threads */
   for(i = 0; i < t; i++){
       returnCode = pthread_join(threads[i], &status);
       if (returnCode){
@@ -4640,17 +4640,17 @@ SEXP read_probeintensities(SEXP filenames,  SEXP rm_mask, SEXP rm_outliers, SEXP
 	       i, returnCode, *((int *) status));
       }
   }
-  Free(args);
-  Free(threads);
+  R_Free(args);
+  R_Free(threads);
   pthread_attr_destroy(&attr);
   pthread_mutex_destroy(&mutex_R);
 
   /* clear the old index data */
-  Free(n_probes);
+  R_Free(n_probes);
   for(i = 0; i < n_probesets; i++){
-    Free(cur_indexes[i]);
+    R_Free(cur_indexes[i]);
   }
-  Free(cur_indexes);
+  R_Free(cur_indexes);
 #else
   for (i=0; i < n_files; i++){ 
     readfile(filenames, CurintensityMatrix, pmMatrix, mmMatrix, i, ref_dim_1, ref_dim_2, 
@@ -5179,7 +5179,7 @@ CEL *read_cel_file(const char *filename, int read_intensities_only){
   CEL *my_CEL;
   int i,k;
 
-  my_CEL = Calloc(1, CEL);
+  my_CEL = R_Calloc(1, CEL);
   my_CEL->multichannel = 0;
   my_CEL->channelnames = NULL;
   
@@ -5205,14 +5205,14 @@ CEL *read_cel_file(const char *filename, int read_intensities_only){
   } else if (isGenericMultiChannelCelFile(filename)){
     generic_get_detailed_header_info(filename,&my_CEL->header);
     my_CEL->multichannel = multichannel_determine_number_channels(filename);
-    my_CEL->channelnames = Calloc(my_CEL->multichannel,char*);
+    my_CEL->channelnames = R_Calloc(my_CEL->multichannel,char*);
     for (k = 0; k <  my_CEL->multichannel; k++){
       my_CEL->channelnames[k] =multichannel_determine_channel_name(filename, k);
     }
   }  else if (isgzGenericMultiChannelCelFile(filename)){
     gzgeneric_get_detailed_header_info(filename,&my_CEL->header);
     my_CEL->multichannel = gzmultichannel_determine_number_channels(filename);
-    my_CEL->channelnames = Calloc(my_CEL->multichannel,char*);
+    my_CEL->channelnames = R_Calloc(my_CEL->multichannel,char*);
     for (k = 0; k <  my_CEL->multichannel; k++){
       my_CEL->channelnames[k] =gzmultichannel_determine_channel_name(filename, k);
     }
@@ -5227,28 +5227,28 @@ CEL *read_cel_file(const char *filename, int read_intensities_only){
 
   /*** Now lets allocate the space for intensities, stdev, npixels ****/
   if (!my_CEL->multichannel){
-    my_CEL->intensities = Calloc(1,double *);
-    my_CEL->intensities[0] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+    my_CEL->intensities = R_Calloc(1,double *);
+    my_CEL->intensities[0] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
     if (!read_intensities_only){
-      my_CEL->stddev = Calloc(1,double *);
-      my_CEL->npixels = Calloc(1,double *);
-      my_CEL->stddev[0] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
-      my_CEL->npixels[0] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+      my_CEL->stddev = R_Calloc(1,double *);
+      my_CEL->npixels = R_Calloc(1,double *);
+      my_CEL->stddev[0] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+      my_CEL->npixels[0] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
     } else {
       my_CEL->stddev = NULL;
       my_CEL->npixels = NULL;
     }
   } else {
-    my_CEL->intensities = Calloc(my_CEL->multichannel,double *);
+    my_CEL->intensities = R_Calloc(my_CEL->multichannel,double *);
     for (i=0; i < my_CEL->multichannel; i++){
-      my_CEL->intensities[i] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+      my_CEL->intensities[i] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
     }
     if (!read_intensities_only){
-      my_CEL->stddev = Calloc(my_CEL->multichannel,double *);
-      my_CEL->npixels = Calloc(my_CEL->multichannel,double *);
+      my_CEL->stddev = R_Calloc(my_CEL->multichannel,double *);
+      my_CEL->npixels = R_Calloc(my_CEL->multichannel,double *);
       for (i=0; i < my_CEL->multichannel; i++){
-	my_CEL->stddev[i] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
-	my_CEL->npixels[i] = Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+	my_CEL->stddev[i] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
+	my_CEL->npixels[i] = R_Calloc((my_CEL->header.cols)*(my_CEL->header.rows),double);
       }
     } else {
       my_CEL->stddev = NULL;
@@ -5331,19 +5331,19 @@ CEL *read_cel_file(const char *filename, int read_intensities_only){
 
 
   if (!my_CEL->multichannel){
-    my_CEL->nmasks = Calloc(1, int);
-    my_CEL->noutliers = Calloc(1, int);
-    my_CEL->masks_x = Calloc(1, short *);
-    my_CEL->masks_y = Calloc(1, short *);
-    my_CEL->outliers_x = Calloc(1, short *);
-    my_CEL->outliers_y = Calloc(1, short *);
+    my_CEL->nmasks = R_Calloc(1, int);
+    my_CEL->noutliers = R_Calloc(1, int);
+    my_CEL->masks_x = R_Calloc(1, short *);
+    my_CEL->masks_y = R_Calloc(1, short *);
+    my_CEL->outliers_x = R_Calloc(1, short *);
+    my_CEL->outliers_y = R_Calloc(1, short *);
   } else {
-    my_CEL->nmasks = Calloc(my_CEL->multichannel, int);
-    my_CEL->noutliers = Calloc(my_CEL->multichannel, int);
-    my_CEL->masks_x = Calloc(my_CEL->multichannel, short *);
-    my_CEL->masks_y = Calloc(my_CEL->multichannel, short *);
-    my_CEL->outliers_x = Calloc(my_CEL->multichannel, short *);
-    my_CEL->outliers_y = Calloc(my_CEL->multichannel, short *);
+    my_CEL->nmasks = R_Calloc(my_CEL->multichannel, int);
+    my_CEL->noutliers = R_Calloc(my_CEL->multichannel, int);
+    my_CEL->masks_x = R_Calloc(my_CEL->multichannel, short *);
+    my_CEL->masks_y = R_Calloc(my_CEL->multichannel, short *);
+    my_CEL->outliers_x = R_Calloc(my_CEL->multichannel, short *);
+    my_CEL->outliers_y = R_Calloc(my_CEL->multichannel, short *);
   }
 
   if (isTextCelFile(filename)){
@@ -5728,53 +5728,53 @@ SEXP R_read_cel_file(SEXP filename, SEXP intensities_mean_only){
 
   }
   
-  Free(myCEL->header.cdfName);
-  Free(myCEL->header.DatHeader);
-  Free(myCEL->header.Algorithm);
-  Free(myCEL->header.AlgorithmParameters);
+  R_Free(myCEL->header.cdfName);
+  R_Free(myCEL->header.DatHeader);
+  R_Free(myCEL->header.Algorithm);
+  R_Free(myCEL->header.AlgorithmParameters);
   
   if (!myCEL->multichannel){
-    Free(myCEL->intensities[0]);
+    R_Free(myCEL->intensities[0]);
     if (!read_intensities_only){
-      Free(myCEL->stddev[0]);
-      Free(myCEL->npixels[0]);
+      R_Free(myCEL->stddev[0]);
+      R_Free(myCEL->npixels[0]);
    }
   } else {
     for (k =0; k < myCEL->multichannel; k++){
-      Free(myCEL->intensities[k]);
+      R_Free(myCEL->intensities[k]);
       if (!read_intensities_only){
-        Free(myCEL->stddev[k]);
-        Free(myCEL->npixels[k]);
+        R_Free(myCEL->stddev[k]);
+        R_Free(myCEL->npixels[k]);
       }
     }
   }
 
-  Free(myCEL->intensities);
+  R_Free(myCEL->intensities);
   if (!read_intensities_only){
-    Free(myCEL->stddev);
-    Free(myCEL->npixels);
+    R_Free(myCEL->stddev);
+    R_Free(myCEL->npixels);
   }
 
   if (!myCEL->multichannel){
-    Free(myCEL->masks_x[0]);
-    Free(myCEL->masks_y[0]);
-    Free(myCEL->outliers_x[0]);
-    Free(myCEL->outliers_y[0]);
+    R_Free(myCEL->masks_x[0]);
+    R_Free(myCEL->masks_y[0]);
+    R_Free(myCEL->outliers_x[0]);
+    R_Free(myCEL->outliers_y[0]);
   } else {
     for (k =0; k < myCEL->multichannel; k++){
-         Free(myCEL->masks_x[k]);
-	 Free(myCEL->masks_y[k]);
-	 Free(myCEL->outliers_x[k]);
-	 Free(myCEL->outliers_y[k]);
+         R_Free(myCEL->masks_x[k]);
+	 R_Free(myCEL->masks_y[k]);
+	 R_Free(myCEL->outliers_x[k]);
+	 R_Free(myCEL->outliers_y[k]);
     }
   }
 
-  Free(myCEL->masks_x);
-  Free(myCEL->masks_y);
-  Free(myCEL->outliers_x);
-  Free(myCEL->outliers_y);
+  R_Free(myCEL->masks_x);
+  R_Free(myCEL->masks_y);
+  R_Free(myCEL->outliers_x);
+  R_Free(myCEL->outliers_y);
   
-  Free(myCEL);
+  R_Free(myCEL);
 
   UNPROTECT(1);
   return theCEL;

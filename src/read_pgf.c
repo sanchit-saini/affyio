@@ -252,7 +252,7 @@ static tokenset *tokenize(char *str, char *delimiters){
   int i=0;
 
   char *current_token;
-  tokenset *my_tokenset = Calloc(1,tokenset);
+  tokenset *my_tokenset = R_Calloc(1,tokenset);
   my_tokenset->n=0;
   
   my_tokenset->tokens = NULL;
@@ -263,8 +263,8 @@ static tokenset *tokenize(char *str, char *delimiters){
 #endif
   while (current_token != NULL){
     my_tokenset->n++;
-    my_tokenset->tokens = Realloc(my_tokenset->tokens,my_tokenset->n,char*);
-    my_tokenset->tokens[i] = Calloc(strlen(current_token)+1,char);
+    my_tokenset->tokens = R_Realloc(my_tokenset->tokens,my_tokenset->n,char*);
+    my_tokenset->tokens[i] = R_Calloc(strlen(current_token)+1,char);
     strcpy(my_tokenset->tokens[i],current_token);
     my_tokenset->tokens[i][(strlen(current_token))] = '\0';
     i++;
@@ -323,10 +323,10 @@ static void delete_tokens(tokenset *x){
   int i;
 
   for (i=0; i < x->n; i++){
-    Free(x->tokens[i]);
+    R_Free(x->tokens[i]);
   }
-  Free(x->tokens);
-  Free(x);
+  R_Free(x->tokens);
+  R_Free(x);
 }
 
 /*******************************************************************
@@ -523,51 +523,51 @@ void dealloc_pgf_headers(pgf_headers *header){
 
   if (header->n_chip_type > 0){
     for (i = 0; i < header->n_chip_type; i++){
-      Free(header->chip_type[i]);
+      R_Free(header->chip_type[i]);
     }
-    Free(header->chip_type);
+    R_Free(header->chip_type);
   }
       
   if (header->lib_set_name != NULL){
-    Free(header->lib_set_name);
+    R_Free(header->lib_set_name);
   }
 
   if (header->lib_set_version != NULL){
-    Free(header->lib_set_version);
+    R_Free(header->lib_set_version);
   }
 
   if (header->pgf_format_version != NULL){
-    Free(header->pgf_format_version);
+    R_Free(header->pgf_format_version);
   }
 
   if (header->header0_str != NULL){
-    Free(header->header0_str);
-    Free(header->header0);
+    R_Free(header->header0_str);
+    R_Free(header->header0);
   }
   if (header->header1_str != NULL){
-    Free(header->header1_str);
-    Free(header->header1);
+    R_Free(header->header1_str);
+    R_Free(header->header1);
   }
   if (header->header2_str != NULL){
-    Free(header->header2_str);
-    Free(header->header2);
+    R_Free(header->header2_str);
+    R_Free(header->header2);
   }
    
   if (header->create_date != NULL){
-    Free(header->create_date);
+    R_Free(header->create_date);
   }
 
   if (header->guid != NULL){
-    Free(header->guid);
+    R_Free(header->guid);
   }
 
   if (header->n_other_headers > 0){
     for (i = 0; i < header->n_other_headers; i++){
-      Free(header->other_headers_keys[i]);
-      Free(header->other_headers_values[i]);
+      R_Free(header->other_headers_keys[i]);
+      R_Free(header->other_headers_values[i]);
     }
-    Free(header->other_headers_keys);
-    Free(header->other_headers_values);
+    R_Free(header->other_headers_keys);
+    R_Free(header->other_headers_values);
   }
 }
 
@@ -581,12 +581,12 @@ void dealloc_probes(probe_list_header *probes){
     while (temp_node != NULL){
       probes->first = (probe_list_node *)temp_node->next;
       if (temp_node->type != NULL){
-	Free(temp_node->type);
+	R_Free(temp_node->type);
       }
       if (temp_node->probe_sequence != NULL){
-	Free(temp_node->probe_sequence);
+	R_Free(temp_node->probe_sequence);
       }
-      Free(temp_node);
+      R_Free(temp_node);
       temp_node = probes->first;
     }
     
@@ -605,17 +605,17 @@ void dealloc_atoms(atom_list_header *atoms){
     while (temp_node != NULL){
       atoms->first = (atom_list_node *)temp_node->next;
       if (temp_node->type != NULL){
-	Free(temp_node->type);
+	R_Free(temp_node->type);
       }
       if (temp_node->exon_position != NULL){
-	Free(temp_node->exon_position);
+	R_Free(temp_node->exon_position);
       }
       if (temp_node->probes != NULL){
 	dealloc_probes(temp_node->probes);
-	Free(temp_node->probes);
+	R_Free(temp_node->probes);
       }
 
-      Free(temp_node);
+      R_Free(temp_node);
       temp_node = atoms->first;
     }
     
@@ -637,18 +637,18 @@ void dealloc_pgf_probesets(probeset_list_header *probesets){
       probesets->first = (probeset_list_node *)temp_node->next;
       
       if (temp_node->type != NULL){
-	Free(temp_node->type);
+	R_Free(temp_node->type);
       }
       if (temp_node->probeset_name != NULL){
-	Free(temp_node->probeset_name);
+	R_Free(temp_node->probeset_name);
       }
       
       if (temp_node->atoms != NULL){
 	dealloc_atoms(temp_node->atoms);
-	Free(temp_node->atoms);
+	R_Free(temp_node->atoms);
       }
 
-      Free(temp_node);
+      R_Free(temp_node);
       temp_node = probesets->first;
     }
   }
@@ -662,13 +662,13 @@ void dealloc_pgf_file(pgf_file* my_pgf){
 
   if (my_pgf->headers != NULL){
     dealloc_pgf_headers(my_pgf->headers);
-    Free(my_pgf->headers);
+    R_Free(my_pgf->headers);
   }
 
   
   if (my_pgf->probesets !=NULL){
     dealloc_pgf_probesets(my_pgf->probesets);
-    Free(my_pgf->probesets);
+    R_Free(my_pgf->probesets);
   }
 
 
@@ -709,7 +709,7 @@ static void determine_order_header0(char *header_str, header_0 *header0){
 
   tokenset *cur_tokenset;
   int i;
-  char *temp_str = Calloc(strlen(header_str) +1, char);
+  char *temp_str = R_Calloc(strlen(header_str) +1, char);
 
 
   strcpy(temp_str,header_str);
@@ -731,7 +731,7 @@ static void determine_order_header0(char *header_str, header_0 *header0){
   }
   delete_tokens(cur_tokenset);
 
-  Free(temp_str);
+  R_Free(temp_str);
 
 }
 
@@ -739,7 +739,7 @@ static void determine_order_header1(char *header_str, header_1 *header1){
 
   tokenset *cur_tokenset;
   int i;
-  char *temp_str = Calloc(strlen(header_str) +1, char);
+  char *temp_str = R_Calloc(strlen(header_str) +1, char);
 
 
   strcpy(temp_str,header_str);
@@ -761,7 +761,7 @@ static void determine_order_header1(char *header_str, header_1 *header1){
   }
   delete_tokens(cur_tokenset);
 
-  Free(temp_str);
+  R_Free(temp_str);
 
 }
 
@@ -769,7 +769,7 @@ static void determine_order_header2(char *header_str, header_2 *header2){
 
   tokenset *cur_tokenset;
   int i;
-  char *temp_str = Calloc(strlen(header_str) +1, char);
+  char *temp_str = R_Calloc(strlen(header_str) +1, char);
 
 
   strcpy(temp_str,header_str);
@@ -801,7 +801,7 @@ static void determine_order_header2(char *header_str, header_2 *header2){
   }
   delete_tokens(cur_tokenset);
 
-  Free(temp_str);
+  R_Free(temp_str);
 
 }
 
@@ -915,66 +915,66 @@ void read_pgf_header(FILE *cur_file, char *buffer, pgf_headers *header){
       /* Decode the Key/Value pair */
       if (strcmp(get_token(cur_tokenset,0),"chip_type") == 0){
 	if (header->n_chip_type == 0){
-	  header->chip_type = Calloc(1, char *);
+	  header->chip_type = R_Calloc(1, char *);
 	} else {
-	  header->chip_type = Realloc(header->chip_type, header->n_chip_type+1, char *);
+	  header->chip_type = R_Realloc(header->chip_type, header->n_chip_type+1, char *);
 	}
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1))+1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1))+1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->chip_type[header->n_chip_type] = temp_str;
 	header->n_chip_type++;
       } else if (strcmp(get_token(cur_tokenset,0), "lib_set_name") == 0){
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->lib_set_name = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "lib_set_version") == 0){
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->lib_set_version = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "pgf_format_version") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->pgf_format_version = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "header0") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->header0_str = temp_str;
-	header->header0 = Calloc(1,header_0);
+	header->header0 = R_Calloc(1,header_0);
 	determine_order_header0(header->header0_str,header->header0);
       } else if (strcmp(get_token(cur_tokenset,0), "header1") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->header1_str = temp_str;
-	header->header1 = Calloc(1,header_1);
+	header->header1 = R_Calloc(1,header_1);
 	determine_order_header1(header->header1_str,header->header1);
       } else if (strcmp(get_token(cur_tokenset,0), "header2") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->header2_str = temp_str;
-	header->header2 = Calloc(1,header_2);
+	header->header2 = R_Calloc(1,header_2);
 	determine_order_header2(header->header2_str,header->header2);
       } else if (strcmp(get_token(cur_tokenset,0), "create_date") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->create_date = temp_str;
       } else if (strcmp(get_token(cur_tokenset,0), "guid") == 0) {
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->guid = temp_str;
       } else {
 	/* not one of the recognised header types */
 	if ( header->n_other_headers == 0){
-	  header->other_headers_keys = Calloc(1, char *);
-	  header->other_headers_values = Calloc(1, char *);
+	  header->other_headers_keys = R_Calloc(1, char *);
+	  header->other_headers_values = R_Calloc(1, char *);
 	} else {
-	  header->other_headers_keys = Realloc(header->other_headers_keys,header->n_other_headers+1, char *);
-	  header->other_headers_values = Realloc(header->other_headers_values,header->n_other_headers+1, char *);
-	  header->chip_type = Realloc(header->chip_type, header->n_chip_type+1, char *);
+	  header->other_headers_keys = R_Realloc(header->other_headers_keys,header->n_other_headers+1, char *);
+	  header->other_headers_values = R_Realloc(header->other_headers_values,header->n_other_headers+1, char *);
+	  header->chip_type = R_Realloc(header->chip_type, header->n_chip_type+1, char *);
 	}
-	temp_str = Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,1)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,1));
 	header->other_headers_values[header->n_other_headers] = temp_str;
-	temp_str = Calloc(strlen(get_token(cur_tokenset,0)) + 1,char);
+	temp_str = R_Calloc(strlen(get_token(cur_tokenset,0)) + 1,char);
 	strcpy(temp_str,get_token(cur_tokenset,0));
 	header->other_headers_keys[header->n_other_headers] = temp_str;
 	header->n_other_headers++;
@@ -1010,13 +1010,13 @@ void insert_probe(char *buffer, probe_list_header *probe_list, header_2 *header2
   tokenset *cur_tokenset;
   probe_list_node *temp_ptr;
 
-  probe_list_node *temp_node = Calloc(1,probe_list_node);
+  probe_list_node *temp_node = R_Calloc(1,probe_list_node);
 
   cur_tokenset = tokenize(buffer,"\t\r\n");
   temp_node->probe_id = atoi(get_token(cur_tokenset,header2->probe_id));
 
   if (header2->type != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header2->type)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header2->type)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header2->type));
     temp_node->type = temp_str;
   }
@@ -1030,7 +1030,7 @@ void insert_probe(char *buffer, probe_list_header *probe_list, header_2 *header2
     temp_node->interrogation_position = atoi(get_token(cur_tokenset,header2->interrogation_position));
   }
   if (header2->probe_sequence != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header2->probe_sequence)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header2->probe_sequence)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header2->probe_sequence));
     temp_node->probe_sequence = temp_str;
   }
@@ -1079,7 +1079,7 @@ void insert_level2(char *buffer, probeset_list_header *probeset_list, header_2 *
   }
 
   if (current_atom->probes == NULL){
-    current_atom->probes = Calloc(1,probe_list_header);
+    current_atom->probes = R_Calloc(1,probe_list_header);
   }
   
   insert_probe(buffer, current_atom->probes, header2);
@@ -1095,19 +1095,19 @@ void insert_atom(char *buffer, atom_list_header *atoms_list, header_1 *header1){
   tokenset *cur_tokenset;
   atom_list_node *temp_ptr;
 
-  atom_list_node *temp_node = Calloc(1,atom_list_node);
+  atom_list_node *temp_node = R_Calloc(1,atom_list_node);
 
   cur_tokenset = tokenize(buffer,"\t\r\n");
 
   temp_node->atom_id = atoi(get_token(cur_tokenset,header1->atom_id));
 
   if (header1->type != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header1->type)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header1->type)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header1->type));
     temp_node->type = temp_str;
   }
   if (header1->exon_position != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header1->exon_position)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header1->exon_position)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header1->exon_position));
     temp_node->exon_position = temp_str;
   }
@@ -1144,7 +1144,7 @@ void insert_level1(char *buffer, probeset_list_header *probeset_list, header_1 *
   current_level0 = probeset_list->current;
   
   if (current_level0->atoms == NULL){
-    current_level0->atoms = Calloc(1,atom_list_header);
+    current_level0->atoms = R_Calloc(1,atom_list_header);
   }
 
   /* Now lets insert the data */
@@ -1166,19 +1166,19 @@ void insert_level0(char *buffer, probeset_list_header *probeset_list, header_0 *
   tokenset *cur_tokenset;
 
 
-  probeset_list_node *temp_node = Calloc(1,probeset_list_node);
+  probeset_list_node *temp_node = R_Calloc(1,probeset_list_node);
 
   cur_tokenset = tokenize(buffer,"\t\r\n");
 
   temp_node->probeset_id = atoi(get_token(cur_tokenset,header0->probeset_id));
 
   if (header0->type != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header0->type)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header0->type)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header0->type));
     temp_node->type = temp_str;
   }
   if (header0->probeset_name != -1){
-    temp_str = Calloc(strlen(get_token(cur_tokenset,header0->probeset_name)) + 1,char);
+    temp_str = R_Calloc(strlen(get_token(cur_tokenset,header0->probeset_name)) + 1,char);
     strcpy(temp_str,get_token(cur_tokenset,header0->probeset_name));
     temp_node->probeset_name = temp_str;
   }
@@ -1237,7 +1237,7 @@ typedef struct{
 probeset_type_list *pgf_count_probeset_types(pgf_file *my_pgf, int *number){
 
 
-  probeset_type_list *my_type_list = Calloc(1,probeset_type_list);
+  probeset_type_list *my_type_list = R_Calloc(1,probeset_type_list);
 
   char *cur_type;
   int n;
@@ -1252,11 +1252,11 @@ probeset_type_list *pgf_count_probeset_types(pgf_file *my_pgf, int *number){
       my_pgf->probesets->current = my_pgf->probesets->first;
       
       if (my_pgf->probesets->current->type == NULL){
-	my_type_list[0].type = Calloc(5,char);
+	my_type_list[0].type = R_Calloc(5,char);
 	strcpy(my_type_list[0].type,"none");
 	
       } else {
-	my_type_list[0].type = Calloc(strlen(my_pgf->probesets->current->type) + 1,char);
+	my_type_list[0].type = R_Calloc(strlen(my_pgf->probesets->current->type) + 1,char);
 	strcpy(my_type_list[0].type,my_pgf->probesets->current->type);
       }
       my_type_list[0].count = 1;
@@ -1276,8 +1276,8 @@ probeset_type_list *pgf_count_probeset_types(pgf_file *my_pgf, int *number){
 	  n++;
 	}
 	if (n == *number){
-	  my_type_list = Realloc(my_type_list,(n+1),probeset_type_list);
-	  my_type_list[n].type = Calloc(strlen(cur_type) + 1,char);
+	  my_type_list = R_Realloc(my_type_list,(n+1),probeset_type_list);
+	  my_type_list[n].type = R_Calloc(strlen(cur_type) + 1,char);
 	  strcpy(my_type_list[n].type,cur_type);
 	  my_type_list[n].count = 1;
 	  *number = *number + 1;
@@ -1296,10 +1296,10 @@ void dealloc_probeset_type_list(probeset_type_list *my_type_list, int length){
   int i;
 
   for (i = 0; i < length; i++){
-    Free(my_type_list[i].type);
+    R_Free(my_type_list[i].type);
   }
 
-  Free(my_type_list);
+  R_Free(my_type_list);
 
 }
 
@@ -1315,14 +1315,14 @@ void read_pgf_file(char **filename){
 
   FILE *cur_file;
   pgf_file my_pgf;
-  char *buffer = Calloc(1024, char);
+  char *buffer = R_Calloc(1024, char);
   probeset_type_list *my_probeset_types;
   int ntypes;
   
   cur_file = open_pgf_file(filename[0]);
   
-  my_pgf.headers = Calloc(1, pgf_headers);
-  my_pgf.probesets = Calloc(1, probeset_list_header);
+  my_pgf.headers = R_Calloc(1, pgf_headers);
+  my_pgf.probesets = R_Calloc(1, probeset_list_header);
 
   read_pgf_header(cur_file,buffer,my_pgf.headers);
   if (validate_pgf_header(my_pgf.headers)){
@@ -1330,7 +1330,7 @@ void read_pgf_file(char **filename){
     my_probeset_types = pgf_count_probeset_types(&my_pgf, &ntypes);
     dealloc_probeset_type_list(my_probeset_types, ntypes);
   }
-  Free(buffer);
+  R_Free(buffer);
   dealloc_pgf_file(&my_pgf);
   fclose(cur_file);
 
